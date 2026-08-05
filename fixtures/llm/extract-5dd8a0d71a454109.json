@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-08-05T21:10:58.777Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "extract",
+    "key": {
+      "event_id": "chi-3445485"
+    }
+  },
+  "result": {
+    "address": "1730 W FULLERTON AVE, Chicago, IL",
+    "needs_geocode": false,
+    "event_type": "INTERIOR RENOVATION",
+    "event_date": null
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "recorded_at": "2026-08-05T21:13:18.214Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "proximity",
+    "key": {
+      "origin": "930 N RUSH ST, Chicago, IL",
+      "destinations": [
+        "1623 W Fulton St, Chicago, IL 60612",
+        "2420 S Wood St, Chicago, IL 60608",
+        "1237 W Division St, Chicago, IL 60642"
+      ]
+    }
+  },
+  "result": {
+    "op": "distance",
+    "legs": [
+      {
+        "origin_index": 0,
+        "destination_index": 0,
+        "distance_miles": 1.9,
+        "distance_km": 3.1,
+        "duration_seconds": null,
+        "duration_minutes": null,
+        "flag": "unreachable_or_snapped"
+      },
+      {
+        "origin_index": 0,
+        "destination_index": 1,
+        "distance_miles": 3,
+        "distance_km": 4.8,
+        "duration_seconds": null,
+        "duration_minutes": null,
+        "flag": "unreachable_or_snapped"
+      },
+      {
+        "origin_index": 0,
+        "destination_index": 2,
+        "distance_miles": 5.6,
+        "distance_km": 9,
+        "duration_seconds": 743,
+        "duration_minutes": 12.383333333333333,
+        "flag": null
+      }
+    ],
+    "resolved_origins": [
+      {
+        "query": "930 N RUSH ST, Chicago, IL",
+        "lat": 41.900089,
+        "lng": -87.627532,
+        "formatted_address": "930 N Rush St, Chicago, IL 60611",
+        "accuracy_type": "rooftop",
+        "accuracy": 1,
+        "error": null
+      }
+    ],
+    "resolved_destinations": [
+      {
+        "query": "1623 W Fulton St, Chicago, IL 60612",
+        "lat": 41.886748,
+        "lng": -87.668845,
+        "formatted_address": "1623 W Fulton St, Chicago, IL 60612",
+        "accuracy_type": "range_interpolation",
+        "accuracy": 1,
+        "error": null
+      },
+      {
+        "query": "2420 S Wood St, Chicago, IL 60608",
+        "lat": 41.848201,
+        "lng": -87.670964,
+        "formatted_address": "2420 S Wood St, Chicago, IL 60608",
+        "accuracy_type": "range_interpolation",
+        "accuracy": 1,
+        "error": null
+      },
+      {
+        "query": "1237 W Division St, Chicago, IL 60642",
+        "lat": 41.903324,
+        "lng": -87.659473,
+        "formatted_address": "1237 W Division St, Chicago, IL 60642",
+        "accuracy_type": "range_interpolation",
+        "accuracy": 1,
+        "error": null
+      }
+    ],
+    "paid_driving_calcs": 3,
+    "notes": [
+      "coverage: US + Canada",
+      "durations reflect typical traffic, not real-time"
+    ],
+    "credits_charged": 40
+  }
+}

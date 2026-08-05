@@ -1,0 +1,30 @@
+{
+  "recorded_at": "2026-08-05T21:12:27.487Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3436792'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3436792",
+      "source_text": "Permit 101078289 at 804 W MONTROSE AVE, Chicago, IL. SELF CERT 2019 CBRC: INT BUILDING OUT OF SHELL SPACE ON GROUND FLOOR - TRADER JOES Reported cost: $700000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101078289",
+      "lat": 41.96195055112621,
+      "lng": -87.6501320506605,
+      "issue_date": "2026-03-27",
+      "reported_cost": 700000,
+      "contacts": [
+        "KERN, BRIAN T",
+        "BELCORE ELECTRIC CONSTRUCTION",
+        "MACON CONSTRUCTION GROUP, INC.",
+        "MONTROSE AND CLARENDON LLC",
+        "C.J. ERICKSON",
+        "SUNRAY HEATING INC"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "recorded_at": "2026-08-05T21:11:50.227Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "lookup",
+    "key": {
+      "input": "1730 W FULLERTON AVE, Chicago, IL"
+    }
+  },
+  "result": {
+    "disposition": "resolved",
+    "lat": 41.926366,
+    "lng": -87.672783,
+    "resolved_address": "1730 W Fullerton Ave, Chicago, IL 60614",
+    "resolved_location": {
+      "lat": 41.926366,
+      "lng": -87.672783,
+      "source": "address"
+    },
+    "county_fips": "17031",
+    "county": "Cook County",
+    "tract_geoid": "17031070700",
+    "state_fips": "17",
+    "state": "Illinois",
+    "block_group_geoid": "170310707002",
+    "block_geoid": "170310707002000",
+    "congressional_district": "IL-05",
+    "cbsa_name": "Chicago-Naperville-Elgin, IL-IN Metro Area",
+    "cbsa_code": "16980",
+    "elevation_m": 179.54197692871094,
+    "fema_flood_zone": "X",
+    "within_floodplain": false,
+    "coastal_high_hazard": false,
+    "county_market": {
+      "population": 5194625,
+      "population_growth_1yr_pct": 0.1124,
+      "net_domestic_migration": -31144,
+      "building_permits_total_annual": 4969,
+      "building_permits_sf_annual": 1191,
+      "building_permits_yoy_pct": -23.6361,
+      "hpi_yoy_pct": 5.19,
+      "employment_total": 2593747,
+      "employment_yoy_pct": 1.0984,
+      "median_household_income_usd": 81797
+    },
+    "in_opportunity_zone": false,
+    "timezone": "America/Chicago",
+    "parcel": {
+      "parcel_id": "f0db298d-20d6-47c1-a367-206b8d629e4e",
+      "apn": "14304000640000",
+      "address": "1730 W FULLERTON AVE",
+      "area_m2": 38544.76961791949,
+      "geometry": "{\"type\":\"Polygon\",\"coordinates\":[[[-87.6747235,41.926821],[-87.674648,41.92676],[-87.6746295,41.926736],[-87.67456,41.9266565],[-87.6745045,41.9265895],[-87.6744485,41.926505],[-87.6743865,41.926417],[-87.674354,41.9263725],[-87.674334,41.9263405],[-87.6743265,41.9262925],[-87.674314,41.9262205],[-87.6743015,41.9261305],[-87.6742795,41.925954],[-87.6742595,41.9258],[-87.674242,41.925687],[-87.674234,41.9254825],[-87.6742295,41.9251795],[-87.673228,41.9251925],[-87.671906,41.92521],[-87.672303,41.9260875],[-87.672547,41.926619],[-87.672764,41.9271355],[-87.6727795,41.927173],[-87.6732855,41.927174],[-87.67533,41.927179],[-87.675023,41.9269995],[-87.674938,41.926952],[-87.6748825,41.926917],[-87.6747235,41.926821]]]}",
+      "geometry_wkt": "POLYGON((-87.6747235 41.926821, -87.674648 41.92676, -87.6746295 41.926736, -87.67456 41.9266565, -87.6745045 41.9265895, -87.6744485 41.926505, -87.6743865 41.926417, -87.674354 41.9263725, -87.674334 41.9263405, -87.6743265 41.9262925, -87.674314 41.9262205, -87.6743015 41.9261305, -87.6742795 41.925954, -87.6742595 41.9258, -87.674242 41.925687, -87.674234 41.9254825, -87.6742295 41.9251795, -87.673228 41.9251925, -87.671906 41.92521, -87.672303 41.9260875, -87.672547 41.926619, -87.672764 41.9271355, -87.6727795 41.927173, -87.6732855 41.927174, -87.67533 41.927179, -87.675023 41.9269995, -87.674938 41.926952, -87.6748825 41.926917, -87.6747235 41.926821))",
+      "owner": "FEDERAL REALTY INVESTM",
+      "zoning": "PD-437",
+      "land_use": "Commercial/Industrial",
+      "assessed_value_usd": 7589079,
+      "last_sale_date": "2017-03-01",
+      "last_sale_price_usd": 1,
+      "match_type": "exact_intersect",
+      "match_distance_m": 0,
+      "match_radius_m": 0,
+      "source": "regrid_paid"
+    },
+    "parcel_unavailable": false,
+    "match_method": "geocode_rooftop+point_in_parcel",
+    "confidence": 0.95
+  }
+}

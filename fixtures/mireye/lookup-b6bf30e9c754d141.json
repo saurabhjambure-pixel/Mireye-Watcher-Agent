@@ -1,0 +1,70 @@
+{
+  "recorded_at": "2026-08-05T21:12:59.409Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "lookup",
+    "key": {
+      "input": "1514 W 33RD ST, Chicago, IL"
+    }
+  },
+  "result": {
+    "disposition": "resolved",
+    "lat": 41.834885,
+    "lng": -87.663909,
+    "resolved_address": "1514 W 33rd St, Chicago, IL 60608",
+    "resolved_location": {
+      "lat": 41.834885,
+      "lng": -87.663909,
+      "source": "address"
+    },
+    "county_fips": "17031",
+    "county": "Cook County",
+    "tract_geoid": "17031840400",
+    "state_fips": "17",
+    "state": "Illinois",
+    "block_group_geoid": "170318404001",
+    "block_geoid": "170318404001004",
+    "congressional_district": "IL-04",
+    "cbsa_name": "Chicago-Naperville-Elgin, IL-IN Metro Area",
+    "cbsa_code": "16980",
+    "elevation_m": 180.89044189453125,
+    "fema_flood_zone": "X",
+    "within_floodplain": false,
+    "coastal_high_hazard": false,
+    "county_market": {
+      "population": 5194625,
+      "population_growth_1yr_pct": 0.1124,
+      "net_domestic_migration": -31144,
+      "building_permits_total_annual": 4969,
+      "building_permits_sf_annual": 1191,
+      "building_permits_yoy_pct": -23.6361,
+      "hpi_yoy_pct": 5.19,
+      "employment_total": 2593747,
+      "employment_yoy_pct": 1.0984,
+      "median_household_income_usd": 81797
+    },
+    "in_opportunity_zone": false,
+    "timezone": "America/Chicago",
+    "parcel": {
+      "parcel_id": "a1faede6-ab83-4147-baf8-06294b9e41e2",
+      "apn": "17321000050000",
+      "address": "1520 W 33RD ST",
+      "area_m2": 8827.81259982336,
+      "geometry": "{\"type\":\"Polygon\",\"coordinates\":[[[-87.66427,41.8342895],[-87.664268,41.834199],[-87.6636185,41.834208],[-87.663644,41.8354645],[-87.663655,41.8354645],[-87.6644145,41.835454],[-87.6644085,41.835163],[-87.6644075,41.835108],[-87.664402,41.8348315],[-87.6644,41.834741],[-87.6643955,41.8345145],[-87.6643905,41.834288],[-87.66427,41.8342895]]]}",
+      "geometry_wkt": "POLYGON((-87.66427 41.8342895, -87.664268 41.834199, -87.6636185 41.834208, -87.663644 41.8354645, -87.663655 41.8354645, -87.6644145 41.835454, -87.6644085 41.835163, -87.6644075 41.835108, -87.664402 41.8348315, -87.6644 41.834741, -87.6643955 41.8345145, -87.6643905 41.834288, -87.66427 41.8342895))",
+      "owner": "FIRST WASHINGTON MGMT",
+      "zoning": "PD-307",
+      "land_use": "Commercial/Industrial",
+      "assessed_value_usd": 1265803,
+      "last_sale_date": "2010-05-01",
+      "last_sale_price_usd": 663000,
+      "match_type": "exact_intersect",
+      "match_distance_m": 0,
+      "match_radius_m": 0,
+      "source": "regrid_paid"
+    },
+    "parcel_unavailable": false,
+    "match_method": "geocode_rooftop+point_in_parcel",
+    "confidence": 0.95
+  }
+}

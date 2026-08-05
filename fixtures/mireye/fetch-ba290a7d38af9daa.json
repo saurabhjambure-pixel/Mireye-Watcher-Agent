@@ -1,0 +1,102 @@
+{
+  "recorded_at": "2026-08-05T21:11:47.930Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "fetch",
+    "key": {
+      "location": {
+        "address": "1730 W FULLERTON AVE, Chicago, IL"
+      },
+      "fields": [
+        "primary_building_footprint_sqm",
+        "primary_building_overture_class",
+        "parcel_zoning",
+        "parcel_area_m2",
+        "political_locality"
+      ]
+    }
+  },
+  "result": {
+    "lat": 41.926366,
+    "lng": -87.672783,
+    "fetched_at": "2026-08-05T21:11:47.858590+00:00",
+    "fields": {
+      "primary_building_footprint_sqm": {
+        "value": 1238.6838499546047,
+        "unit": "square_meters",
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:11:47.856394+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "primary_building_overture_class": {
+        "value": "retail",
+        "unit": null,
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:11:47.856403+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "parcel_zoning": {
+        "value": "PD-437",
+        "unit": null,
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:53:19.732306+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:59:05 -0400; last_ownership_transfer_date=2017-03-31; saledate=2017-03-01.",
+        "status": "ok"
+      },
+      "parcel_area_m2": {
+        "value": 38544.76961791949,
+        "unit": "square_meters",
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:53:19.731919+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:59:05 -0400; last_ownership_transfer_date=2017-03-31; saledate=2017-03-01.",
+        "status": "ok"
+      },
+      "political_locality": {
+        "value": "Chicago",
+        "unit": null,
+        "source": "OVERTURE_DIVISIONS",
+        "source_url": "https://overturemaps.org/documentation/divisions/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:11:37.187659+00:00",
+        "dataset_vintage": null,
+        "ttl_seconds": 31536000,
+        "notes": null,
+        "status": "ok"
+      }
+    },
+    "partial_failures": [],
+    "geocode": {
+      "accuracy": 1,
+      "accuracy_type": "rooftop",
+      "match_type": "building_centroid",
+      "normalized_address": "1730 W Fullerton Ave, Chicago, IL 60614",
+      "provider": "geocodio",
+      "source": "Cook",
+      "parcel_grade": true,
+      "precision_note": null
+    },
+    "resolved_location": {
+      "lat": 41.926366,
+      "lng": -87.672783,
+      "source": "address"
+    }
+  }
+}

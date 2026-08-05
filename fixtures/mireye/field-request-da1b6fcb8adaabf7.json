@@ -1,0 +1,97 @@
+{
+  "recorded_at": "2026-08-05T20:47:41.823Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "field-request",
+    "key": {
+      "idempotency_key": "expansion-radar-chi-3436792-county_market_parcel_data_v1_lookup"
+    }
+  },
+  "result": {
+    "request_id": "fr_49aee4bfc5594f578c4351a4f61756e1",
+    "status": "awaiting_confirm",
+    "waiting_on": "requester",
+    "phase": null,
+    "queue_position": null,
+    "estimated_ready_at": null,
+    "resolved_locations": [
+      {
+        "index": 0,
+        "resolved_address": "804 W Montrose Ave, Chicago, IL 60613",
+        "resolved_location": {
+          "lat": 41.961988,
+          "lng": -87.650235,
+          "source": "address"
+        }
+      }
+    ],
+    "disposition": [
+      {
+        "ask": "county market data for buyer-intent scoring on a parcel",
+        "units": "jobs",
+        "reason": "County-level employment (BLS QCEW) is available, but 'market data' is typically broader (demographics, income, commercial activity, absorption rates, competitive density). Employment alone may not be sufficient for retail buyer-intent scoring without clarification of what 'market data' includes.",
+        "resume": {
+          "url": "https://api.mireye.com/v1/fetch",
+          "body": {
+            "lat": 41.961988,
+            "lng": -87.650235,
+            "fields": [
+              "county_employment_total"
+            ]
+          },
+          "method": "POST"
+        },
+        "sample": {
+          "unit": "jobs",
+          "value": 2593747,
+          "source": "BLS_QCEW",
+          "fetched_at": "2026-08-05T20:47:41.361037+00:00",
+          "source_url": "https://www.bls.gov/cew/downloadable-data-files.htm"
+        },
+        "field_id": "county_employment_total",
+        "description": "BLS QCEW annual-average covered employment (all ownerships, all industries) for the containing county, latest year.",
+        "disposition": "near_miss_confirm",
+        "confirm_required": true,
+        "interpretation_hints": "BLS QCEW annual-average **covered** employment (place-of-work), latest year (2025). Honesty; covered (UI) employment excludes self-employed, most agriculture, and military - it is NOT the total labor force."
+      },
+      {
+        "ask": "parcel data for the matched parcel",
+        "units": null,
+        "reason": "parcel_id is available but is an identifier only. A buyer-intent scoring decision likely needs multiple parcel attributes (size, zoning, owner, location geometry). The request groups these as 'parcel data' but no single field answers 'all parcel data' — multiple fields (parcel_id, parcel_area_m2, parcel_zoning, parcel_geometry_wkt, parcel_owner, parcel_apn) are available as distinct matches.",
+        "resume": {
+          "url": "https://api.mireye.com/v1/fetch",
+          "body": {
+            "lat": 41.961988,
+            "lng": -87.650235,
+            "fields": [
+              "parcel_id"
+            ]
+          },
+          "method": "POST"
+        },
+        "sample": {
+          "sample_omitted_reason": "metered"
+        },
+        "field_id": "parcel_id",
+        "description": "Stable Regrid identifier for the matched parcel.",
+        "disposition": "near_miss_confirm",
+        "confirm_required": true,
+        "interpretation_hints": "Ownership/identity reflect the Regrid source vintage, which can predate a recent sale — verify recent transactions (a parcel may still list a prior owner after acquisition). parcel_data_source tells you the tier; premium fields are null on regrid_free_tier (data-tier limited, NOT 'no parcel here')."
+      }
+    ],
+    "resume": {
+      "url": "https://api.mireye.com/v1/fetch",
+      "body": {
+        "lat": 41.961988,
+        "lng": -87.650235,
+        "fields": [
+          "county_employment_total"
+        ]
+      },
+      "method": "POST"
+    },
+    "context_blob": null,
+    "created_at": "2026-08-05T20:47:36.181452+00:00",
+    "updated_at": "2026-08-05T20:47:41.377898+00:00"
+  }
+}

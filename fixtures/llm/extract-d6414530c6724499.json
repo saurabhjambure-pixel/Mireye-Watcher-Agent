@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-08-05T21:12:57.593Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "extract",
+    "key": {
+      "event_id": "chi-3424236"
+    }
+  },
+  "result": {
+    "address": "1514 W 33RD ST, Chicago, IL",
+    "needs_geocode": false,
+    "event_type": "TEMP BANNER",
+    "event_date": "11/19/25"
+  }
+}

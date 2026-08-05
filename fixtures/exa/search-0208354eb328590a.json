@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-05T21:10:52.479Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "search",
+    "key": {
+      "query": "\"Old Navy\" new store opening"
+    }
+  },
+  "result": {
+    "resolved_brand": "Old Navy",
+    "confidence": "high",
+    "corroborating_urls": [
+      "https://www.cantonrep.com/story/business/2026/07/22/old-navy-ready-to-open-new-store-in-jackson-township/90999628007/",
+      "https://www.bellinghamherald.com/news/local/article315761043.html",
+      "https://www.owensborotimes.com/features/2025/11/old-navy-to-open-first-owensboro-store-wednesday-grand-opening-event-set-for-saturday/"
+    ],
+    "cost_dollars": 0.007
+  }
+}

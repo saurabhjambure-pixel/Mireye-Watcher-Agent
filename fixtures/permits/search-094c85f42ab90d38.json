@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-08-05T21:13:37.526Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3429666'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3429666",
+      "source_text": "Permit 101075478 at 2879 E 77TH ST, Chicago, IL. SPR 2019 CBRC: REMOVE AND REPLACE REAR WOOD PORCH, SAME SIZE, SAME LOCATION FOR EXISTING 2 1/2 FRAME SINGLE FAMILY RESIDENCE W BASEMENT (CONSTRUCTION TYPE VA, USE GROUP R-5) Reported cost: $15000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101075478",
+      "lat": 41.75660681523244,
+      "lng": -87.55405571327604,
+      "issue_date": "2026-08-04",
+      "reported_cost": 15000,
+      "contacts": [
+        "ZAHABIYA BENSAHEB",
+        "HERGHELEGIU, OANA",
+        "PERMIT STUDIO LLC",
+        "JPS CONSTRUCTION LLC"
+      ]
+    }
+  ]
+}

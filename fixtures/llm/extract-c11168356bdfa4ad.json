@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-08-05T21:12:36.765Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "extract",
+    "key": {
+      "event_id": "chi-3436792"
+    }
+  },
+  "result": {
+    "address": "804 W MONTROSE AVE, Chicago, IL",
+    "needs_geocode": false,
+    "event_type": "SELF CERT 2019 CBRC: INT BUILDING OUT OF SHELL SPACE ON GROUND FLOOR - TRADER JOES",
+    "event_date": null
+  }
+}

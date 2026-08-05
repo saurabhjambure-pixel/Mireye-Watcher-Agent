@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-05T21:12:28.675Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "search",
+    "key": {
+      "query": "\"Trader Joe's\" new store opening"
+    }
+  },
+  "result": {
+    "resolved_brand": "Trader Joe's",
+    "confidence": "high",
+    "corroborating_urls": [
+      "https://www.democratandchronicle.com/story/news/2026/08/02/trader-joes-new-york-stores-syracuse-camillus-yonkers/91087069007/",
+      "https://www.wdsu.com/article/mandeville-trader-joes-opening-date/73296598",
+      "https://www.usatoday.com/story/money/2026/07/14/trader-joes-store-openings-2026/90922882007/"
+    ],
+    "cost_dollars": 0.007
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "recorded_at": "2026-08-05T21:12:48.312Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "recalibrate",
+    "key": {
+      "event_id": "chi-3436792"
+    }
+  },
+  "result": "This account matters right now because Trader Joe's is actively building out ground-floor space in a 74,022 sq ft residential footprint located just 10 minutes from Node - Fulton Market, signaling strong commercial investment even while county building permits are down 23.6% YoY."
+}

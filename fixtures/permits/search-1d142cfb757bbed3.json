@@ -1,0 +1,29 @@
+{
+  "recorded_at": "2026-08-05T21:10:51.362Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3445485'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3445485",
+      "source_text": "Permit 101081799 at 1730 W FULLERTON AVE, Chicago, IL. INTERIOR RENOVATION OF AN EXISTING SUITE SPACE TO BUILD OUT AN OLD NAVY RETAIL CLOTHING STORE PER PLANS  **CERTIFIED PLANS CORRECTIONS: CONDITIONAL PERMIT SUBJECT TO FIELD INSPECTIONS Reported cost: $247000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101081799",
+      "lat": 41.92521232759425,
+      "lng": -87.67192542513618,
+      "issue_date": "2026-08-03",
+      "reported_cost": 247000,
+      "contacts": [
+        "FR RIVERPOINT LL",
+        "SARGENTI, ROBERT J",
+        "MGD ELECTRIC",
+        "SCOUT SERVICES, LLC",
+        "ECKINGER CONSTRUCTION COMPANY"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "recorded_at": "2026-08-05T21:13:20.036Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "lookup",
+    "key": {
+      "input": "930 N RUSH ST, Chicago, IL"
+    }
+  },
+  "result": {
+    "disposition": "resolved",
+    "lat": 41.900089,
+    "lng": -87.627532,
+    "resolved_address": "930 N Rush St, Chicago, IL 60611",
+    "resolved_location": {
+      "lat": 41.900089,
+      "lng": -87.627532,
+      "source": "address"
+    },
+    "county_fips": "17031",
+    "county": "Cook County",
+    "tract_geoid": "17031081201",
+    "state_fips": "17",
+    "state": "Illinois",
+    "block_group_geoid": "170310812011",
+    "block_geoid": "170310812011001",
+    "congressional_district": "IL-05",
+    "cbsa_name": "Chicago-Naperville-Elgin, IL-IN Metro Area",
+    "cbsa_code": "16980",
+    "elevation_m": 180.8463897705078,
+    "fema_flood_zone": "X",
+    "within_floodplain": false,
+    "coastal_high_hazard": false,
+    "county_market": {
+      "population": 5194625,
+      "population_growth_1yr_pct": 0.1124,
+      "net_domestic_migration": -31144,
+      "building_permits_total_annual": 4969,
+      "building_permits_sf_annual": 1191,
+      "building_permits_yoy_pct": -23.6361,
+      "hpi_yoy_pct": 5.19,
+      "employment_total": 2593747,
+      "employment_yoy_pct": 1.0984,
+      "median_household_income_usd": 81797
+    },
+    "in_opportunity_zone": false,
+    "timezone": "America/Chicago",
+    "parcel": {
+      "parcel_id": "f486ae26-85d7-47b6-b1bc-1cbdaffa102c",
+      "apn": "17032060140000",
+      "address": "930 N RUSH ST",
+      "area_m2": 264.30019294694404,
+      "geometry": "{\"type\":\"Polygon\",\"coordinates\":[[[-87.6277335,41.900111],[-87.6277315,41.9000425],[-87.6272975,41.9000495],[-87.62733,41.9001175],[-87.6277335,41.900111]]]}",
+      "geometry_wkt": "POLYGON((-87.6277335 41.900111, -87.6277315 41.9000425, -87.6272975 41.9000495, -87.62733 41.9001175, -87.6277335 41.900111))",
+      "owner": "CO RYAN PTS DEPT 800",
+      "zoning": "DX-7",
+      "land_use": "Commercial/Industrial",
+      "assessed_value_usd": 380750,
+      "last_sale_date": "2012-04-01",
+      "last_sale_price_usd": 20700000,
+      "match_type": "exact_intersect",
+      "match_distance_m": 0,
+      "match_radius_m": 0,
+      "source": "regrid_paid"
+    },
+    "parcel_unavailable": false,
+    "match_method": "geocode_rooftop+point_in_parcel",
+    "confidence": 0.95
+  }
+}

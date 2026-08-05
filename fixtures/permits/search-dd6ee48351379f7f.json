@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-08-05T21:12:49.542Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3424236'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3424236",
+      "source_text": "Permit 101073109 at 1514 W 33RD ST, Chicago, IL. TEMP BANNER READING \"COMING SOON FIVE BELOW NOW HIRING APPLY @FIVEBELOW.COM / \" TEMP BANNER DATES 11/19/25-3/6/26 Reported cost: $750.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101073109",
+      "lat": 41.834311070719124,
+      "lng": -87.66389989325327,
+      "issue_date": "2025-08-25",
+      "reported_cost": 750,
+      "contacts": [
+        "ALL-RIGHT SIGN INC"
+      ]
+    }
+  ]
+}

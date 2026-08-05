@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-05T21:13:06.946Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "search",
+    "key": {
+      "query": "\"lululemon\" new store opening"
+    }
+  },
+  "result": {
+    "resolved_brand": "lululemon",
+    "confidence": "high",
+    "corroborating_urls": [
+      "https://www.nj.com/business/2026/08/lululemon-to-open-8th-north-jersey-store-on-aug-7-here-are-the-details.html",
+      "https://corporate.lululemon.com/media/press-releases/2026/05-22-2026-110013698",
+      "https://corporate.lululemon.com/media/our-stories/2026/first-lululemon-store-in-romania-has-opened-in-bucharest"
+    ],
+    "cost_dollars": 0.007
+  }
+}

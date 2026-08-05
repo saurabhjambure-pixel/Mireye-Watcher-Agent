@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-08-05T21:13:12.136Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "extract",
+    "key": {
+      "event_id": "chi-3451685"
+    }
+  },
+  "result": {
+    "address": "930 N RUSH ST, Chicago, IL",
+    "needs_geocode": false,
+    "event_type": "INTERNALLY ILLUMINATED FACE-LIT WALL SIGN",
+    "event_date": null
+  }
+}

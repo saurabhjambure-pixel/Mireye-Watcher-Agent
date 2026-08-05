@@ -1,0 +1,45 @@
+{
+  "_comment": "Watchlist + reference nodes for the demo. Events themselves are NOT hand-written — see events[].permit_id below, which run.ts resolves to real, live Chicago building-permit records (data.cityofchicago.org, no auth) via src/sources/permits.ts. historical_velocity is a stated modeling assumption (prior known openings for that brand, before this permit), not fabricated Mireye/Exa data — see CLAUDE.md and scripts/author-fixtures.ts for how it's combined with this live signal to score expansion velocity.",
+
+  "watchlist": [
+    { "name": "Old Navy" },
+    { "name": "Trader Joe's", "aliases": ["Trader Joes"] },
+    { "name": "Five Below" },
+    { "name": "lululemon", "aliases": ["Lululemon Athletica"] }
+  ],
+
+  "_reference_nodes_note": "Real last-mile distribution/warehouse buildings inside Chicago city limits (Kinzie Industrial Corridor, Pilsen Industrial Corridor, and the Goose Island/North Branch distribution development), chosen to be genuinely close to the watchlist events above. An earlier version of this file used 3 suburban logistics parks 50-90 min away, which capped every event's proximity score low regardless of the actual signal.",
+  "reference_nodes": [
+    { "label": "Node - Fulton Market", "address": "1623 W Fulton St, Chicago, IL 60612" },
+    { "label": "Node - Pilsen", "address": "2420 S Wood St, Chicago, IL 60608" },
+    { "label": "Node - Goose Island", "address": "1237 W Division St, Chicago, IL 60642" }
+  ],
+
+  "events": [
+    {
+      "permit_id": "3445485",
+      "note": "Old Navy — 1730 W Fullerton Ave, Chicago. Real $247,000 interior buildout permit, issued 2026-08-03. Exact-match on gate. Expected: high score, ACT_THRESHOLD crossed, outreach_draft.",
+      "historical_velocity": 3
+    },
+    {
+      "permit_id": "3436792",
+      "note": "Trader Joe's — 804 W Montrose Ave, Chicago. Real $700,000 buildout permit, issued 2026-03-27. Description reads \"TRADER JOES\" (no apostrophe) — fuzzy/edit-distance match on gate, not exact. Expected: mid score, NOTABLE crossed but not ACT.",
+      "historical_velocity": 1
+    },
+    {
+      "permit_id": "3424236",
+      "note": "Five Below — 1514 W 33rd St, Chicago. Real \"coming soon, now hiring\" temp-banner sign permit, issued 2025-08-25. Expected: low score, below NOTABLE_THRESHOLD — no recalibration, no action.",
+      "historical_velocity": 0
+    },
+    {
+      "permit_id": "3451685",
+      "note": "lululemon — 930 N Rush St, Chicago. Real storefront sign permit, issued 2026-06-29. Expected: high score via velocity+proximity despite a missing footprint field at Mireye — genuine evidence_gap, field_request action.",
+      "historical_velocity": 3
+    },
+    {
+      "permit_id": "3429666",
+      "note": "Unrelated residential porch-replacement permit, 2879 E 77th St, Chicago — no watchlist match. Expected: gate_status rejected, 0 LLM calls, 0 Mireye credits.",
+      "historical_velocity": 0
+    }
+  ]
+}

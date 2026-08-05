@@ -1,0 +1,26 @@
+{
+  "recorded_at": "2026-08-05T21:13:05.836Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3451685'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3451685",
+      "source_text": "Permit 101084427 at 930 N RUSH ST, Chicago, IL. LULULEMON: INTERNALLY ILLUMINATED FACE-LIT WALL SIGN (N RUSH ST ELEVATION) - 1'-6\" H X 10'-8\" W (16 SQ FT) Reported cost: $5000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101084427",
+      "lat": 41.8999629668549,
+      "lng": -87.62730097842565,
+      "issue_date": "2026-06-29",
+      "reported_cost": 5000,
+      "contacts": [
+        "CITY SERVICE ELECTRIC INC.",
+        "KDN SIGNS INC"
+      ]
+    }
+  ]
+}

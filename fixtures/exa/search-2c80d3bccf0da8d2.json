@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-05T21:12:50.487Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "search",
+    "key": {
+      "query": "\"Five Below\" new store opening"
+    }
+  },
+  "result": {
+    "resolved_brand": "Five Below",
+    "confidence": "high",
+    "corroborating_urls": [
+      "https://medina-gazette.com/news/472092/five-below-celebrates-grand-opening-in-medina/",
+      "https://www.usatoday.com/story/money/2026/07/17/five-below-opening-new-stores/90953240007/",
+      "https://www.vvdailypress.com/story/business/2026/06/05/five-below-june-2026-opening-date-set-apple-valley-shopping-hub/90426164007/"
+    ],
+    "cost_dollars": 0.007
+  }
+}

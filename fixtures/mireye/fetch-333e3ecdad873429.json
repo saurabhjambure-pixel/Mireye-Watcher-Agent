@@ -1,0 +1,102 @@
+{
+  "recorded_at": "2026-08-05T21:12:38.113Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "fetch",
+    "key": {
+      "location": {
+        "address": "804 W MONTROSE AVE, Chicago, IL"
+      },
+      "fields": [
+        "primary_building_footprint_sqm",
+        "primary_building_overture_class",
+        "parcel_zoning",
+        "parcel_area_m2",
+        "political_locality"
+      ]
+    }
+  },
+  "result": {
+    "lat": 41.961988,
+    "lng": -87.650235,
+    "fetched_at": "2026-08-05T21:12:38.044332+00:00",
+    "fields": {
+      "primary_building_footprint_sqm": {
+        "value": 6876.908548607412,
+        "unit": "square_meters",
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:33.840407+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "primary_building_overture_class": {
+        "value": "apartments",
+        "unit": null,
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:33.840417+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "parcel_zoning": {
+        "value": "PD-138",
+        "unit": null,
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:26.621483+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:58:32 -0400; last_ownership_transfer_date=2016-11-02; saledate=2016-11-01.",
+        "status": "ok"
+      },
+      "parcel_area_m2": {
+        "value": 734.180692151808,
+        "unit": "square_meters",
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:26.621265+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:58:32 -0400; last_ownership_transfer_date=2016-11-02; saledate=2016-11-01.",
+        "status": "ok"
+      },
+      "political_locality": {
+        "value": "Chicago",
+        "unit": null,
+        "source": "OVERTURE_DIVISIONS",
+        "source_url": "https://overturemaps.org/documentation/divisions/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:12:38.043139+00:00",
+        "dataset_vintage": null,
+        "ttl_seconds": 31536000,
+        "notes": null,
+        "status": "ok"
+      }
+    },
+    "partial_failures": [],
+    "geocode": {
+      "accuracy": 1,
+      "accuracy_type": "range_interpolation",
+      "match_type": null,
+      "normalized_address": "804 W Montrose Ave, Chicago, IL 60613",
+      "provider": "geocodio",
+      "source": "TIGER/Line® from the US Census Bureau",
+      "parcel_grade": false,
+      "precision_note": "Note: this location was estimated from the street address rather than matched to a rooftop, so it can be off by up to ~2,872 m in rural areas. Check `normalized_address` against the address you supplied — the geocoder resolves to the closest match it can find, which may be a different street or town. Confirm both before relying on parcel-specific conclusions."
+    },
+    "resolved_location": {
+      "lat": 41.961988,
+      "lng": -87.650235,
+      "source": "address"
+    }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "recorded_at": "2026-08-05T21:13:17.769Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "fetch",
+    "key": {
+      "location": {
+        "address": "930 N RUSH ST, Chicago, IL"
+      },
+      "fields": [
+        "primary_building_footprint_sqm",
+        "primary_building_overture_class",
+        "parcel_zoning",
+        "parcel_area_m2",
+        "political_locality"
+      ]
+    }
+  },
+  "result": {
+    "lat": 41.900089,
+    "lng": -87.627532,
+    "fetched_at": "2026-08-05T21:13:17.700749+00:00",
+    "fields": {
+      "primary_building_footprint_sqm": {
+        "value": 303.3025046026517,
+        "unit": "square_meters",
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:56:05.364798+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "primary_building_overture_class": {
+        "value": "retail",
+        "unit": null,
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:56:05.364808+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "parcel_zoning": {
+        "value": "DX-7",
+        "unit": null,
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:58.709000+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:47:46 -0400; last_ownership_transfer_date=2012-04-10; saledate=2012-04-01.",
+        "status": "ok"
+      },
+      "parcel_area_m2": {
+        "value": 264.30019294694404,
+        "unit": "square_meters",
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:58.708777+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:47:46 -0400; last_ownership_transfer_date=2012-04-10; saledate=2012-04-01.",
+        "status": "ok"
+      },
+      "political_locality": {
+        "value": "Chicago",
+        "unit": null,
+        "source": "OVERTURE_DIVISIONS",
+        "source_url": "https://overturemaps.org/documentation/divisions/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:13:17.699253+00:00",
+        "dataset_vintage": null,
+        "ttl_seconds": 31536000,
+        "notes": null,
+        "status": "ok"
+      }
+    },
+    "partial_failures": [],
+    "geocode": {
+      "accuracy": 1,
+      "accuracy_type": "rooftop",
+      "match_type": "parcel_centroid",
+      "normalized_address": "930 N Rush St, Chicago, IL 60611",
+      "provider": "geocodio",
+      "source": "City of Chicago",
+      "parcel_grade": true,
+      "precision_note": null
+    },
+    "resolved_location": {
+      "lat": 41.900089,
+      "lng": -87.627532,
+      "source": "address"
+    }
+  }
+}

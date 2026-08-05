@@ -1,0 +1,102 @@
+{
+  "recorded_at": "2026-08-05T21:12:58.426Z",
+  "cassetteKey": {
+    "provider": "mireye",
+    "op": "fetch",
+    "key": {
+      "location": {
+        "address": "1514 W 33RD ST, Chicago, IL"
+      },
+      "fields": [
+        "primary_building_footprint_sqm",
+        "primary_building_overture_class",
+        "parcel_zoning",
+        "parcel_area_m2",
+        "political_locality"
+      ]
+    }
+  },
+  "result": {
+    "lat": 41.834885,
+    "lng": -87.663909,
+    "fetched_at": "2026-08-05T21:12:58.352922+00:00",
+    "fields": {
+      "primary_building_footprint_sqm": {
+        "value": 3065.5698836197116,
+        "unit": "square_meters",
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:48.953785+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "primary_building_overture_class": {
+        "value": "retail",
+        "unit": null,
+        "source": "OVERTURE_BUILDINGS",
+        "source_url": "https://overturemaps.org/documentation/buildings/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:48.953793+00:00",
+        "dataset_vintage": "2026-07-22.0",
+        "ttl_seconds": 2592000,
+        "notes": null,
+        "status": "ok"
+      },
+      "parcel_zoning": {
+        "value": "PD-307",
+        "unit": null,
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:42.661553+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:53:18 -0400; saledate=2010-05-01.",
+        "status": "ok"
+      },
+      "parcel_area_m2": {
+        "value": 8827.81259982336,
+        "unit": "square_meters",
+        "source": "REGRID",
+        "source_url": "https://app.regrid.com/api/v2/parcels/point",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T19:55:42.661336+00:00",
+        "dataset_vintage": "2025-12-23",
+        "ttl_seconds": 86400,
+        "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:53:18 -0400; saledate=2010-05-01.",
+        "status": "ok"
+      },
+      "political_locality": {
+        "value": "Chicago",
+        "unit": null,
+        "source": "OVERTURE_DIVISIONS",
+        "source_url": "https://overturemaps.org/documentation/divisions/",
+        "confidence": "high",
+        "fetched_at": "2026-08-05T21:12:58.352003+00:00",
+        "dataset_vintage": null,
+        "ttl_seconds": 31536000,
+        "notes": null,
+        "status": "ok"
+      }
+    },
+    "partial_failures": [],
+    "geocode": {
+      "accuracy": 1,
+      "accuracy_type": "rooftop",
+      "match_type": "building_centroid",
+      "normalized_address": "1514 W 33rd St, Chicago, IL 60608",
+      "provider": "geocodio",
+      "source": "Cook",
+      "parcel_grade": true,
+      "precision_note": null
+    },
+    "resolved_location": {
+      "lat": 41.834885,
+      "lng": -87.663909,
+      "source": "address"
+    }
+  }
+}

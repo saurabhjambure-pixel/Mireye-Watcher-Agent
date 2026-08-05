@@ -1,0 +1,24 @@
+{
+  "name": "expansion-radar",
+  "version": "0.1.0",
+  "description": "Demo agent for the Mireye Build Challenge: watches commercial permit signals, enriches with Mireye site facts, scores buyer intent deterministically, and acts.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "pipeline": "tsx src/run.ts",
+    "test": "node --import tsx --test src/**/*.test.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
