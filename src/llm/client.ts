@@ -5,6 +5,39 @@
 
 const PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
 
+/** Bump when an LLM prompt or its expected output contract changes. */
+export const LLM_CASSETTE_VERSION = "v1";
+
+export interface LlmUsage {
+  inputTokens: number;
+  outputTokens: number;
+  model: string;
+}
+
+export interface LlmCompletion {
+  text: string;
+  usage: LlmUsage | null;
+}
+
+/**
+ * Approximate list pricing (USD per million tokens), for demo cost
+ * visibility only — NOT billing-accurate. Provider pricing pages change
+ * independently of this file; verify against them before treating
+ * llm_cost_dollars as authoritative. Token counts themselves (llm_input_tokens
+ * /llm_output_tokens on CostLedger) ARE the real, provider-reported numbers —
+ * only the dollar conversion below is an estimate.
+ */
+const PRICING_PER_MILLION_TOKENS: Record<string, { input: number; output: number }> = {
+  "claude-haiku-4-5-20251001": { input: 1.0, output: 5.0 },
+  "gemini-flash-latest": { input: 0.075, output: 0.3 },
+};
+
+export function estimateCostDollars(usage: LlmUsage): number | null {
+  const pricing = PRICING_PER_MILLION_TOKENS[usage.model];
+  if (!pricing) return null;
+  return (usage.inputTokens * pricing.input + usage.outputTokens * pricing.output) / 1_000_000;
+}
+
 class RetryableLlmError extends Error {}
 
 function apiKey(): string {
@@ -15,9 +48,10 @@ function apiKey(): string {
   return key;
 }
 
-async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promise<string> {
+async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promise<LlmCompletion> {
   switch (PROVIDER) {
     case "anthropic": {
+      const model = "claude-haiku-4-5-20251001";
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
@@ -26,7 +60,7 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          model: "claude-haiku-4-5-20251001",
+          model,
           max_tokens: opts.maxTokens ?? 300,
           messages: [{ role: "user", content: prompt }],
         }),
@@ -36,10 +70,16 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
         if (res.status === 429 || res.status >= 500) throw new RetryableLlmError(msg);
         throw new Error(msg);
       }
-      const data = (await res.json()) as { content: { type: string; text?: string }[] };
+      const data = (await res.json()) as {
+        content: { type: string; text?: string }[];
+        usage?: { input_tokens: number; output_tokens: number };
+      };
       const text = data.content.find((block) => block.type === "text")?.text;
       if (!text) throw new Error("Anthropic response contained no text block.");
-      return text;
+      const usage = data.usage
+        ? { inputTokens: data.usage.input_tokens, outputTokens: data.usage.output_tokens, model }
+        : null;
+      return { text, usage };
     }
     case "gemini": {
       // Model alias, not a pinned version — always resolves to the current
@@ -73,6 +113,7 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
       }
       const data = (await res.json()) as {
         candidates?: { content?: { parts?: { text?: string; thought?: boolean }[] }; finishReason?: string }[];
+        usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
       };
       const parts = data.candidates?.[0]?.content?.parts ?? [];
       // Skip any "thought" parts — the real answer is the first non-thought
@@ -84,7 +125,14 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
             JSON.stringify(data).slice(0, 500),
         );
       }
-      return text;
+      const usage = data.usageMetadata
+        ? {
+            inputTokens: data.usageMetadata.promptTokenCount ?? 0,
+            outputTokens: data.usageMetadata.candidatesTokenCount ?? 0,
+            model,
+          }
+        : null;
+      return { text, usage };
     }
     default:
       throw new Error(
@@ -95,13 +143,14 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
 }
 
 /**
- * Send one prompt, expect one JSON or plain-text completion back. Callers
- * are responsible for parsing/validating the response against their own
- * schema — this wrapper does not assume a shape. Retries once on a
- * transient upstream failure (429/5xx) — both providers' APIs return these
- * under normal load spikes, not just outages.
+ * Send one prompt, expect one JSON or plain-text completion back, plus
+ * usage (token counts + model) when the provider reports it. Callers are
+ * responsible for parsing/validating `.text` against their own schema —
+ * this wrapper does not assume a shape. Retries once on a transient
+ * upstream failure (429/5xx) — both providers' APIs return these under
+ * normal load spikes, not just outages.
  */
-export async function complete(prompt: string, opts: { maxTokens?: number } = {}): Promise<string> {
+export async function complete(prompt: string, opts: { maxTokens?: number } = {}): Promise<LlmCompletion> {
   try {
     return await completeOnce(prompt, opts);
   } catch (err) {

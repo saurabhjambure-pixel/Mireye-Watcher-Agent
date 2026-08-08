@@ -278,8 +278,8 @@ export interface ScoreBreakdown {
   evidence_gap_field?: string; // which field(s) were missing, if evidence_gap
   // Present only after refineWithMarketData runs (tier 3, post-/v1/lookup).
   // 0/false beforehand — this data doesn't exist until the 300-credit
-  // lookup call returns, so it can only refine an already-notable score,
-  // never gate the initial NOTABLE_THRESHOLD screening decision.
+  // lookup call returns, so it can only refine an already-act-capable score,
+  // never gate the initial LOOKUP_THRESHOLD screening decision.
   market_component: number;
   market_evidence_gap: boolean;
 }
@@ -304,7 +304,14 @@ export interface CostLedger {
   mireye_credits: number;
   mireye_endpoints_used: string[];
   exa_cost_dollars: number;
-  escalation_stopped_at: "gate" | "screen" | "score" | "completed";
+  escalation_stopped_at: "gate" | "unmask" | "screen" | "score" | "completed" | "error";
+  llm_input_tokens: number;
+  llm_output_tokens: number;
+  // null when any of this event's LLM calls replayed from a fixture
+  // recorded before usage tracking existed (or an unpriced model) — an
+  // honestly-unavailable total, never a silently-incomplete partial sum.
+  // Real, provider-reported input/output token counts are never null.
+  llm_cost_dollars: number | null;
 }
 
 // ---------------------------------------------------------------------------

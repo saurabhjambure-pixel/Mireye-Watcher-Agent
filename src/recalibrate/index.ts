@@ -3,7 +3,7 @@
 // pipeline enforces that by construction (see src/pipeline.ts), not by
 // convention here.
 
-import { complete } from "../llm/client.js";
+import { complete, LLM_CASSETTE_VERSION, type LlmUsage } from "../llm/client.js";
 import { withCassette } from "../cassette.js";
 import type { ExtractedEvent, ScoreBreakdown } from "../schemas/index.js";
 
@@ -20,8 +20,17 @@ export async function recalibrate(
   event: ExtractedEvent,
   factsSummary: string,
   breakdown: ScoreBreakdown,
-): Promise<string> {
-  return withCassette({ provider: "llm", op: "recalibrate", key: { event_id: event.event_id } }, () =>
-    complete(RECALIBRATE_PROMPT(event, factsSummary, breakdown), { maxTokens: 120 }),
+): Promise<{ text: string; usage: LlmUsage | null }> {
+  // See extract/index.ts's identical comment: usage is only populated on an
+  // actual live call, never fabricated for a replayed fixture.
+  let usage: LlmUsage | null = null;
+  const text = await withCassette(
+    { provider: "llm", op: "recalibrate", version: LLM_CASSETTE_VERSION, key: { event_id: event.event_id } },
+    async () => {
+      const completion = await complete(RECALIBRATE_PROMPT(event, factsSummary, breakdown), { maxTokens: 120 });
+      usage = completion.usage;
+      return completion.text;
+    },
   );
+  return { text, usage };
 }

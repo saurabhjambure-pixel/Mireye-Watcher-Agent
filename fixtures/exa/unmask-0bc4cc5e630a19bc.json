@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-08-08T00:00:00.000Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "unmask",
+    "key": { "query": "\"400 W ERIE ST\" new store opening OR retail lease OR now open" }
+  },
+  "_note": "Hand-authored fixture for src/sources/exa.unmask.test.ts — see unmask-64adf129d95903bb.json's note on the cached shape (unmaskBrand's transformed return value, not the raw Exa response). Simulates a real but unrelated result (no watchlist brand named), proving unmaskBrand returns resolved_brand: null rather than guessing.",
+  "result": {
+    "resolved_brand": null,
+    "confidence": "low",
+    "corroborating_urls": [
+      "https://www.chicagobusiness.com/commercial-real-estate/400-w-erie-office-lease"
+    ],
+    "cost_dollars": 0.007
+  }
+}

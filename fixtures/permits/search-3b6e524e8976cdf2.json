@@ -1,0 +1,31 @@
+{
+  "recorded_at": "2026-08-08T06:10:07.082Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='3345884'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-3345884",
+      "source_text": "Permit 101032529 at 1514 N MILWAUKEE AVE, Chicago, IL. SELF-CERT 2019 CBRC: INTERIOR BUILDOUT OF EXISTING RETAIL SPACE. WORK SHALL INCLUDE NEW NON-LOAD BEARING PARTITIONS, RETAIL FIXTURES, LIGHTING, PLUMBING, MECHANICAL AND ELECTRICAL WORK. NO CHANGEIN USE.. (OCCUPANCY MERCANTILE / CONSTRUCTION TYPE II-A) Reported cost: $402000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=101032529",
+      "lat": 41.90896024738321,
+      "lng": -87.67547637112533,
+      "issue_date": "2023-11-15",
+      "reported_cost": 402000,
+      "contacts": [
+        "NELSON, JEFFREY P",
+        "KENNETH D. DOSIE ELECTRIC",
+        "BURNHAM NATIONWIDE, INC.",
+        "DONALD R. BORG CONSTRUCTION CO., INC.",
+        "2ND STREET USA, INC. INC.",
+        "CAPITOL PLUMBING,INC",
+        "COLUMBIA SHEET METAL WORKS"
+      ]
+    }
+  ]
+}

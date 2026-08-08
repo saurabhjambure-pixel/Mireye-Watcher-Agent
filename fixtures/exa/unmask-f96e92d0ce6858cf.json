@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-08T06:10:08.780Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "unmask",
+    "key": {
+      "query": "\"1514 N MILWAUKEE AVE\" new store opening OR retail lease OR now open"
+    }
+  },
+  "result": {
+    "resolved_brand": null,
+    "confidence": "low",
+    "corroborating_urls": [
+      "https://www.dnainfo.com/chicago/20140731/wicker-park/new-tenant-means-end-of-mural-on-high-fidelity-storefront",
+      "https://www.dnainfo.com/chicago/20150416/wicker-park/city-soles-debuts-new-digs-former-high-fidelity-shop-photos",
+      "https://www.dnainfo.com/chicago/20140227/wicker-park/high-fidelity-movie-record-shop-space-bought-wicker-park"
+    ],
+    "cost_dollars": 0.007
+  }
+}

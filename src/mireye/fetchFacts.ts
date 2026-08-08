@@ -16,13 +16,17 @@ import { withCassette } from "../cassette.js";
 import { mireyeRequest, withRetry } from "./client.js";
 import type { MireyeFetchResponse } from "../schemas/index.js";
 
-/** Fields pulled at tier 1 — kept minimal since /v1/fetch is billed per field. */
+/**
+ * Fields pulled at tier 1 — kept minimal since /v1/fetch is billed per
+ * field. `political_locality` was removed 2026-08: it was fetched (1
+ * credit/event) but never consumed anywhere downstream — see
+ * AUDIT_REPORT.md, "fields fetched but never used."
+ */
 export const SITE_FACT_FIELDS = [
   "primary_building_footprint_sqm",
   "primary_building_overture_class",
   "parcel_zoning",
   "parcel_area_m2",
-  "political_locality",
 ] as const;
 
 export interface FetchFactsLocation {

@@ -11,8 +11,7 @@
         "primary_building_footprint_sqm",
         "primary_building_overture_class",
         "parcel_zoning",
-        "parcel_area_m2",
-        "political_locality"
+        "parcel_area_m2"
       ]
     }
   },
@@ -67,18 +66,6 @@
         "dataset_vintage": "2025-12-23",
         "ttl_seconds": 86400,
         "notes": "Regrid exact point lookup; point intersects returned parcel. Regrid freshness metadata: last_refresh=2025-12-23; updated_at=2026-06-12 18:59:05 -0400; last_ownership_transfer_date=2017-03-31; saledate=2017-03-01.",
-        "status": "ok"
-      },
-      "political_locality": {
-        "value": "Chicago",
-        "unit": null,
-        "source": "OVERTURE_DIVISIONS",
-        "source_url": "https://overturemaps.org/documentation/divisions/",
-        "confidence": "high",
-        "fetched_at": "2026-08-05T21:11:37.187659+00:00",
-        "dataset_vintage": null,
-        "ttl_seconds": 31536000,
-        "notes": null,
         "status": "ok"
       }
     },

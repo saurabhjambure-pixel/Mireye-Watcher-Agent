@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-08-08T00:00:00.000Z",
+  "cassetteKey": {
+    "provider": "llm",
+    "op": "extract",
+    "version": "v1",
+    "key": { "event_id": "unmask-test-1" }
+  },
+  "_note": "Hand-authored fixture for src/pipeline.unmask.test.ts's success-path test. withCassette here caches extractEvent's inner RawExtraction shape (address/needs_geocode/event_type/event_date), not the final ExtractedEvent — matches the real extract fixtures. needs_geocode: true (with rawEvent.lat/lng also null) deliberately routes the test into the pipeline's 'no usable address or coordinate' early-return, so this test can prove gate promotion without needing a full chain of Mireye fixtures too.",
+  "result": {
+    "address": "2100 N HALSTED ST",
+    "needs_geocode": true,
+    "event_type": "retail_buildout",
+    "event_date": "2026-05-01"
+  }
+}

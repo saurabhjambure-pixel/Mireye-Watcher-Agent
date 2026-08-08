@@ -1,0 +1,31 @@
+{
+  "recorded_at": "2026-08-08T06:12:04.595Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='2835818'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-2835818",
+      "source_text": "Permit 100698146 at 930 N RUSH ST, Chicago, IL. SELF CERT; TENANT RENOVATION OF EXISTING RETAIL STORE INCLUDING FACADE ALTERATIONS WITH STRUCTURAL PEER REVIEW PER PLANS. TO INCLUDE MEP SCOPE OF WORK. Reported cost: $750000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=100698146",
+      "lat": 41.8999629668549,
+      "lng": -87.62730097842565,
+      "issue_date": "2017-05-11",
+      "reported_cost": 750000,
+      "contacts": [
+        "KURZMAN RANDALL P",
+        "AMERICAN ELECTRICAL,INC.",
+        "PRAIRIE CONTRACTORS, INC.",
+        "D.T.M. MASONRY INC",
+        "MARK INGLIS",
+        "M. DIFOGGIO PLUMBING CO.",
+        "SUN RAY HEATING, INC"
+      ]
+    }
+  ]
+}

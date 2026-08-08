@@ -1,0 +1,20 @@
+{
+  "recorded_at": "2026-08-08T06:12:04.859Z",
+  "cassetteKey": {
+    "provider": "exa",
+    "op": "unmask",
+    "key": {
+      "query": "\"930 N RUSH ST\" new store opening OR retail lease OR now open"
+    }
+  },
+  "result": {
+    "resolved_brand": "lululemon",
+    "confidence": "high",
+    "corroborating_urls": [
+      "https://rejournals.com/colliers-international-chicago-announces-sale-of-lululemon-athletica-store/",
+      "https://www.chicagotribune.com/2017/05/01/lululemons-gold-coast-store-to-nearly-double-in-size-as-it-becomes-flagship/",
+      "https://www.chicagomag.com/style-shopping/November-2017/This-Wicker-Park-Pop-Up-Shop-Is-the-Stuff-of-Sneakerhead-Dreams/"
+    ],
+    "cost_dollars": 0.007
+  }
+}

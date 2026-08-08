@@ -1,26 +1,29 @@
 // Orchestrates one event through the full tiered-escalation pipeline:
 //   gate -> resolve(Exa) -> extract(LLM#1) -> fetch(T1) -> [screen]
-//   -> proximity(T2) -> score -> [NOTABLE?] -> lookup(T3) -> recalibrate(LLM#2)
-//   -> [ACT?] -> outreach_draft | field_request
+//   -> proximity(T2) -> score -> [LOOKUP_THRESHOLD, i.e. act-capable?]
+//   -> lookup(T3) -> recalibrate(LLM#2) -> [ACT?] -> outreach_draft | field_request
 //
 // Cheap calls run on every matched event; expensive ones only run on
-// survivors of the previous threshold. Every early exit is recorded in
-// cost_ledger.escalation_stopped_at so the cost-discipline claim is visible
-// in the output, not just asserted.
+// survivors of the previous threshold — including /v1/lookup itself, which
+// only runs on candidates already scoring act-capable pre-lookup (see
+// LOOKUP_THRESHOLD in thresholds.ts). Every early exit, and every per-event
+// failure, is recorded in cost_ledger.escalation_stopped_at so the
+// cost-discipline claim is visible in the output, not just asserted.
 
 import { matchWatchlist } from "./gate/index.js";
-import { resolveBrand } from "./sources/exa.js";
+import { resolveBrand, unmaskBrand } from "./sources/exa.js";
 import { extractEvent } from "./extract/index.js";
 import { fetchFacts, SITE_FACT_FIELDS } from "./mireye/fetchFacts.js";
 import { proximityToNodes } from "./mireye/proximity.js";
 import { lookup } from "./mireye/lookup.js";
 import { scoreEvent, scoreLabel, refineWithMarketData } from "./score/index.js";
-import { NOTABLE_THRESHOLD, ACT_THRESHOLD, SQM_TO_SQFT } from "./score/thresholds.js";
+import { ACT_THRESHOLD, LOOKUP_THRESHOLD, SQM_TO_SQFT, UNMASK_MIN_REPORTED_COST } from "./score/thresholds.js";
 import { recalibrate } from "./recalibrate/index.js";
 import { draftOutreach } from "./act/draftOutreach.js";
 import { requestFieldForGap } from "./act/requestField.js";
 import { Ledger } from "./ledger.js";
 import type {
+  ExaResolution,
   PipelineOutput,
   RawEvent,
   ReferenceNode,
@@ -101,6 +104,29 @@ export interface ProcessEventOptions {
   onRawMireyeResponse?: (label: string, raw: unknown) => void;
 }
 
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function failedOutput(rawEvent: RawEvent, watchlist: WatchlistCompany[], ledger: Ledger, error: unknown): PipelineOutput {
+  const gate = matchWatchlist(rawEvent, watchlist);
+  const message = errorMessage(error);
+  ledger.setStoppedAt("error");
+  console.error(`[pipeline error] event=${rawEvent.id}: ${message}`);
+  return {
+    account: gate.company ?? "unknown",
+    signal: rawEvent.source_text.slice(0, 140),
+    synthesis: "",
+    mireye_facts_summary: "Pipeline failed before enrichment completed.",
+    buyer_intent: { label: "low", confidence: 0 },
+    action_taken: { type: "none", detail: `Pipeline failed safely: ${message}` },
+    sources: [rawEvent.source_url],
+    gate_status: gate.matched && gate.company ? "matched" : "rejected",
+    llm_calls_made: ledger.toJSON().llm_calls,
+    cost_ledger: ledger.toJSON(),
+  };
+}
+
 export async function processEvent(
   rawEvent: RawEvent,
   watchlist: WatchlistCompany[],
@@ -108,36 +134,84 @@ export async function processEvent(
   options: ProcessEventOptions,
 ): Promise<PipelineOutput> {
   const ledger = new Ledger();
+  try {
+    return await processEventUnsafe(rawEvent, watchlist, nodes, options, ledger);
+  } catch (error) {
+    return failedOutput(rawEvent, watchlist, ledger, error);
+  }
+}
+
+async function processEventUnsafe(
+  rawEvent: RawEvent,
+  watchlist: WatchlistCompany[],
+  nodes: ReferenceNode[],
+  options: ProcessEventOptions,
+  ledger: Ledger,
+): Promise<PipelineOutput> {
 
   // --- Stage 1: Gate (0 cost) ---
-  const gate = matchWatchlist(rawEvent, watchlist);
+  let gate = matchWatchlist(rawEvent, watchlist);
+  // Reused for Stage 2 if the unmask tier below already spent an Exa call
+  // resolving this event — avoids paying for corroboration twice.
+  let exaFromUnmask: ExaResolution | null = null;
+
   if (!gate.matched || !gate.company) {
-    ledger.setStoppedAt("gate");
-    return {
-      account: "unknown",
-      signal: rawEvent.source_text.slice(0, 140),
-      synthesis: "",
-      mireye_facts_summary: "",
-      buyer_intent: { label: "low", confidence: 0 },
-      action_taken: { type: "none", detail: "Rejected at gate — no watchlist match." },
-      sources: [rawEvent.source_url],
-      gate_status: "rejected",
-      llm_calls_made: 0,
-      cost_ledger: ledger.toJSON(),
-    };
+    // --- Stage 1b: Unmask (Exa, only on gate-misses judged commercially
+    // plausible — see UNMASK_MIN_REPORTED_COST). The permit may be filed
+    // under a contractor/property-LLC name the free gate can't match; this
+    // spends one Exa call searching by the permit's own address/location
+    // text for independent coverage naming the real brand. This is the one
+    // place a "rejected" event can carry nonzero cost, and it's visible in
+    // cost_ledger either way. See src/sources/exa.ts's unmaskBrand.
+    const commerciallyPlausible = (rawEvent.reported_cost ?? 0) >= UNMASK_MIN_REPORTED_COST;
+
+    if (commerciallyPlausible) {
+      const unmask = await unmaskBrand({ sourceText: rawEvent.source_text, watchlist });
+      ledger.recordExaCost(unmask.cost_dollars);
+
+      if (unmask.resolved_brand) {
+        gate = { matched: true, company: unmask.resolved_brand, matched_on: "exa-unmask" };
+        exaFromUnmask = unmask;
+      }
+    }
+
+    if (!gate.matched || !gate.company) {
+      ledger.setStoppedAt(commerciallyPlausible ? "unmask" : "gate");
+      return {
+        account: "unknown",
+        signal: rawEvent.source_text.slice(0, 140),
+        synthesis: "",
+        mireye_facts_summary: "",
+        buyer_intent: { label: "low", confidence: 0 },
+        action_taken: {
+          type: "none",
+          detail: commerciallyPlausible
+            ? "Rejected — commercially plausible permit, but Exa could not identify a watchlist brand behind it."
+            : "Rejected at gate — no watchlist match.",
+        },
+        sources: [rawEvent.source_url],
+        gate_status: "rejected",
+        llm_calls_made: 0,
+        cost_ledger: ledger.toJSON(),
+      };
+    }
   }
 
   // --- Stage 2: Exa brand resolution (corroboration, not primary signal) ---
-  const exa = await resolveBrand({
-    gateMatchedCompany: gate.company,
-    address: null,
-    permitOwnerNames: rawEvent.contacts,
-  });
-  ledger.recordExaCost(exa.cost_dollars);
+  // If the unmask tier above already spent an Exa call resolving this exact
+  // event, reuse that result instead of spending a second one.
+  const exa =
+    exaFromUnmask ??
+    (await resolveBrand({
+      gateMatchedCompany: gate.company,
+      address: null,
+      permitOwnerNames: rawEvent.contacts,
+    }));
+  if (!exaFromUnmask) ledger.recordExaCost(exa.cost_dollars);
 
   // --- Stage 3: Extract (LLM #1) ---
-  const extracted = await extractEvent(rawEvent, gate.company);
-  ledger.recordLlmCall();
+  const { extracted, usage: extractUsage } = await extractEvent(rawEvent, gate.company);
+  ledger.recordLlmCall(extractUsage);
 
   // --- Stage 4: Tier 1 — /v1/fetch (site facts) ---
   type ResolvedLocation =
@@ -238,7 +312,7 @@ export async function processEvent(
     ...exa.corroborating_urls,
   ];
 
-  if (breakdown.buyer_intent_score < NOTABLE_THRESHOLD) {
+  if (breakdown.buyer_intent_score < LOOKUP_THRESHOLD) {
     ledger.setStoppedAt("score");
     return {
       account: gate.company,
@@ -246,7 +320,7 @@ export async function processEvent(
       synthesis: "",
       mireye_facts_summary: factsSummary,
       buyer_intent: { label: scoreLabel(breakdown.buyer_intent_score), confidence: breakdown.buyer_intent_score },
-      action_taken: { type: "none", detail: "Below NOTABLE_THRESHOLD — no recalibration, no action." },
+      action_taken: { type: "none", detail: "Below LOOKUP_THRESHOLD — no lookup, recalibration, or action." },
       sources,
       gate_status: "matched",
       llm_calls_made: ledger.toJSON().llm_calls,
@@ -277,8 +351,8 @@ export async function processEvent(
   const refinedFactsSummary = appendMarketSummary(factsSummary, lookupRaw.county_market ?? null);
 
   // --- Stage 8: Recalibrate (LLM #2) ---
-  const synthesis = await recalibrate(extracted, refinedFactsSummary, refined);
-  ledger.recordLlmCall();
+  const { text: synthesis, usage: recalibrateUsage } = await recalibrate(extracted, refinedFactsSummary, refined);
+  ledger.recordLlmCall(recalibrateUsage);
 
   if (refined.buyer_intent_score < ACT_THRESHOLD) {
     ledger.setStoppedAt("score");
@@ -308,8 +382,8 @@ export async function processEvent(
     );
     ledger.recordFieldRequest();
   } else {
-    const draft = await draftOutreach(extracted, synthesis.trim(), refinedFactsSummary);
-    ledger.recordLlmCall();
+    const { text: draft, usage: draftUsage } = await draftOutreach(extracted, synthesis.trim(), refinedFactsSummary);
+    ledger.recordLlmCall(draftUsage);
     actionResult = { type: "outreach_draft" as const, detail: draft };
   }
 

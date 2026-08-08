@@ -35,9 +35,19 @@ export interface CassetteKey {
   provider: string; // "permits" | "mireye" | "exa" | "llm"
   op: string; // e.g. "fetch", "proximity", "search", "extract"
   key: unknown; // JSON-serializable request identity (address, fields, prompt hash, etc.)
+  /** Optional contract version; bump it when a prompt or response schema changes. */
+  version?: string;
 }
 
-function fixturePath({ provider, op, key }: CassetteKey): string {
+function fixturePath({ provider, op, key, version }: CassetteKey): string {
+  const digest = createHash("sha256")
+    .update(JSON.stringify(version === undefined ? key : { version, key }))
+    .digest("hex")
+    .slice(0, 16);
+  return path.join(FIXTURES_DIR, provider, `${op}-${digest}.json`);
+}
+
+function legacyFixturePath({ provider, op, key }: CassetteKey): string {
   const digest = createHash("sha256").update(JSON.stringify(key)).digest("hex").slice(0, 16);
   return path.join(FIXTURES_DIR, provider, `${op}-${digest}.json`);
 }
@@ -79,9 +89,19 @@ export async function withCassette<T>(cassetteKey: CassetteKey, live: () => Prom
     const parsed = JSON.parse(raw) as { result: T };
     return parsed.result;
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      throw new CassetteMissError(filePath, cassetteKey);
+    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+    // v1 keeps existing fixtures replayable while making the version part of
+    // all newly recorded paths. Future versions intentionally do not fall
+    // back: a changed prompt/schema must miss loudly instead of reusing stale output.
+    if (cassetteKey.version === "v1") {
+      try {
+        const legacyRaw = await readFile(legacyFixturePath(cassetteKey), "utf-8");
+        const parsed = JSON.parse(legacyRaw) as { result: T };
+        return parsed.result;
+      } catch (legacyErr) {
+        if ((legacyErr as NodeJS.ErrnoException).code !== "ENOENT") throw legacyErr;
+      }
     }
-    throw err;
+    throw new CassetteMissError(filePath, cassetteKey);
   }
 }

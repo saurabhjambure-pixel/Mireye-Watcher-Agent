@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "description": "Demo agent for the Mireye Build Challenge: watches commercial permit signals, enriches with Mireye site facts, scores buyer intent deterministically, and acts.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "pipeline": "tsx src/run.ts",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test src/**/*.test.ts src/*.test.ts",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {

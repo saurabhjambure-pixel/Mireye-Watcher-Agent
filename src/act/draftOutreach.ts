@@ -2,7 +2,7 @@
 // Mireye facts by their source_url and fetched_at so the citation is
 // checkable, not just asserted.
 
-import { complete } from "../llm/client.js";
+import { complete, LLM_CASSETTE_VERSION, type LlmUsage } from "../llm/client.js";
 import { withCassette } from "../cassette.js";
 import type { ExtractedEvent } from "../schemas/index.js";
 
@@ -19,9 +19,17 @@ export async function draftOutreach(
   event: ExtractedEvent,
   signal: string,
   factsSummary: string,
-): Promise<string> {
-  return withCassette(
-    { provider: "llm", op: "draft-outreach", key: { event_id: event.event_id } },
-    () => complete(OUTREACH_PROMPT(event.company_name, signal, factsSummary), { maxTokens: 200 }),
+): Promise<{ text: string; usage: LlmUsage | null }> {
+  // See extract/index.ts's identical comment: usage is only populated on an
+  // actual live call, never fabricated for a replayed fixture.
+  let usage: LlmUsage | null = null;
+  const text = await withCassette(
+    { provider: "llm", op: "draft-outreach", version: LLM_CASSETTE_VERSION, key: { event_id: event.event_id } },
+    async () => {
+      const completion = await complete(OUTREACH_PROMPT(event.company_name, signal, factsSummary), { maxTokens: 200 });
+      usage = completion.usage;
+      return completion.text;
+    },
   );
+  return { text, usage };
 }

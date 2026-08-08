@@ -11,8 +11,9 @@ cited physical-world facts from Mireye, scores buyer intent deterministically,
 and — above a threshold — acts: drafts outreach copy or files a Mireye field
 request to close an evidence gap.
 
-Pipeline: `permits → gate → resolve(Exa) → extract(LLM#1) → mireye enrich
-(tiered) → score → recalibrate(LLM#2) → act`.
+Pipeline: `permits → gate → [unmask(Exa), only on plausible gate-misses] →
+resolve(Exa) → extract(LLM#1) → mireye enrich (tiered) → score →
+recalibrate(LLM#2) → act`.
 
 ## External APIs (only three, all thin-wrapped)
 
@@ -53,7 +54,10 @@ interface PipelineOutput {
     mireye_credits: number;
     mireye_endpoints_used: string[];
     exa_cost_dollars: number;
-    escalation_stopped_at: "gate" | "screen" | "score" | "completed";
+    escalation_stopped_at: "gate" | "unmask" | "screen" | "score" | "completed" | "error";
+    llm_input_tokens: number;
+    llm_output_tokens: number;
+    llm_cost_dollars: number | null; // null when any call this event made replayed pre-usage-tracking
   };
 }
 ```
@@ -63,8 +67,9 @@ interface PipelineOutput {
 - Deterministic before LLM, always. The gate (`src/gate/`) and the scorer
   (`src/score/`) are pure functions — zero network, zero LLM calls.
 - Tiered escalation: cheap Mireye calls run on every matched event; expensive
-  ones (`/v1/lookup`, LLM #2, act) only run on survivors of the previous
-  threshold. Stage-skips must be visible in `cost_ledger.escalation_stopped_at`.
+  ones (`/v1/lookup`, LLM #2, act) only run on act-capable survivors of the
+  previous threshold. Stage-skips and per-event failures must be visible in
+  `cost_ledger.escalation_stopped_at`.
 - Thresholds and weights live only in `src/score/thresholds.ts`. No inline
   magic numbers anywhere else.
 - All external calls go through `src/cassette.ts`. Default mode replays

@@ -15,11 +15,35 @@ export const NOTABLE_THRESHOLD = 0.5;
 /** Score at/above this triggers the act stage (outreach draft or field request). */
 export const ACT_THRESHOLD = 0.7;
 
-// scoreLabel's "medium"/"low" boundary deliberately reuses NOTABLE_THRESHOLD
-// rather than a fourth independent constant: a "medium" label should always
-// mean "this event got recalibrated," so the label can never contradict the
-// action_taken.detail text (e.g. "medium" confidence next to "below
-// NOTABLE_THRESHOLD — no recalibration").
+/**
+ * Score at/above this earns the 300-credit market lookup. Deliberately
+ * pinned to ACT_THRESHOLD, not NOTABLE_THRESHOLD: lookup only refines a
+ * score by a bounded +/-MARKET_BONUS_WEIGHT, so spending it on a candidate
+ * that isn't already act-capable can essentially never change the outcome.
+ * See AUDIT_REPORT.md's /v1/lookup cost finding for the credit math this
+ * was tightened in response to.
+ */
+export const LOOKUP_THRESHOLD = ACT_THRESHOLD;
+
+// NOTE: because LOOKUP_THRESHOLD == ACT_THRESHOLD, an event can now be
+// labeled "medium" (scoreLabel's NOTABLE_THRESHOLD..ACT_THRESHOLD band)
+// WITHOUT ever being recalibrated — it was screened out at the
+// LOOKUP_THRESHOLD gate before LLM #2 ran. "Medium" therefore means "a
+// promising pre-lookup score that didn't clear the bar to spend real
+// evidence-gathering credits on," not "recalibrated" — read
+// action_taken.detail for what actually happened, not the label alone.
+// (Only scores that reach LOOKUP_THRESHOLD get recalibrated; those can
+// still end up "medium" post-refinement if a negative market nudge pulls
+// them back below ACT_THRESHOLD — see the branch below.)
+
+// --- Unmask: second-tier gate for permits filed under a contractor/LLC ---
+// name, where the free text/contact match misses entirely. Spending an Exa
+// call here is the ONE place a "rejected" event can carry nonzero cost — so
+// it is gated on the permit itself looking like a genuine commercial
+// buildout, not attempted on every miss. A $300 fence-repair permit or a
+// residential porch replacement never reaches this; a $150K+ buildout does.
+/** Reported permit cost (USD) at/above which a gate-miss is worth one Exa call to try to unmask. */
+export const UNMASK_MIN_REPORTED_COST = 150_000;
 
 // --- Velocity: watchlist-brand permits for this company within the window ---
 export const VELOCITY_WINDOW_DAYS = 180;
@@ -41,9 +65,9 @@ export const SIZE_MAX_SQFT = 5000;
 
 // --- Market momentum: county-level growth signal from /v1/lookup (tier 3) ---
 // This data only exists after the 300-credit lookup call, so it can only
-// ever REFINE an already-notable candidate's score (a bounded nudge, not a
-// reweighted component) — it never gates the cheap NOTABLE_THRESHOLD
-// screening decision, which stays velocity/proximity/size only.
+// ever REFINE an already-act-capable candidate's score (a bounded nudge, not
+// a reweighted component) — it never gates the cheap lookup screening
+// decision, which stays velocity/proximity/size only.
 /** Max additive adjustment (+/-) applied once real county_market data is in hand. */
 export const MARKET_BONUS_WEIGHT = 0.1;
 /** building_permits_yoy_pct (permit-activity trend) range mapped to 0-1. */

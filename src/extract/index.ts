@@ -7,7 +7,7 @@
 // date. Re-asking the LLM "who is this" would be decorative, since we
 // already know the answer with higher confidence than an LLM guess.
 
-import { complete } from "../llm/client.js";
+import { complete, LLM_CASSETTE_VERSION, type LlmUsage } from "../llm/client.js";
 import { withCassette } from "../cassette.js";
 import type { ExtractedEvent, RawEvent } from "../schemas/index.js";
 
@@ -38,21 +38,34 @@ function parseJsonResponse(raw: string): RawExtraction {
   return parsed;
 }
 
-export async function extractEvent(rawEvent: RawEvent, gateMatchedCompany: string): Promise<ExtractedEvent> {
+export async function extractEvent(
+  rawEvent: RawEvent,
+  gateMatchedCompany: string,
+): Promise<{ extracted: ExtractedEvent; usage: LlmUsage | null }> {
+  // Captured only when the cassette actually makes a live call — stays null
+  // on a cache hit, since a replayed fixture's original usage was never
+  // recorded and reporting it would be fabricated, not measured. See
+  // Ledger.recordLlmCall in src/ledger.ts.
+  let usage: LlmUsage | null = null;
+
   const raw = await withCassette(
-    { provider: "llm", op: "extract", key: { event_id: rawEvent.id } },
+    { provider: "llm", op: "extract", version: LLM_CASSETTE_VERSION, key: { event_id: rawEvent.id } },
     async () => {
-      const response = await complete(EXTRACT_PROMPT(rawEvent.source_text), { maxTokens: 200 });
-      return parseJsonResponse(response);
+      const completion = await complete(EXTRACT_PROMPT(rawEvent.source_text), { maxTokens: 200 });
+      usage = completion.usage;
+      return parseJsonResponse(completion.text);
     },
   );
 
   return {
-    event_id: rawEvent.id,
-    company_name: gateMatchedCompany,
-    address: raw.address,
-    needs_geocode: raw.needs_geocode,
-    event_type: raw.event_type,
-    event_date: raw.event_date ?? rawEvent.issue_date ?? "unknown",
+    extracted: {
+      event_id: rawEvent.id,
+      company_name: gateMatchedCompany,
+      address: raw.address,
+      needs_geocode: raw.needs_geocode,
+      event_type: raw.event_type,
+      event_date: raw.event_date ?? rawEvent.issue_date ?? "unknown",
+    },
+    usage,
   };
 }

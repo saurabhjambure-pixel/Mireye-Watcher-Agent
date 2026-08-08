@@ -61,15 +61,15 @@ function isMatch(haystack: string, candidate: string): "exact" | "fuzzy" | null 
 }
 
 /**
- * Check a raw permit event against the watchlist. Pure function: no
- * network, no LLM. Matches against both the permit's free-text description
- * and its contact/owner names (brands are often named in one but not the
- * other — a description may say "OLD NAVY" while the owner of record is an
- * LLC, or vice versa).
+ * Core matcher: exact/fuzzy-scan an arbitrary text blob against the
+ * watchlist. Pure — no network, no LLM. Exported (not just an internal
+ * helper) so anything that produces watchlist-relevant text — not only the
+ * permit's own description/contacts — can reuse the exact same matching
+ * rules instead of a second, drifting implementation. See
+ * `src/sources/exa.ts`'s `unmaskBrand`, which runs this same matcher over
+ * corroborating news text instead of permit text.
  */
-export function matchWatchlist(rawEvent: RawEvent, watchlist: WatchlistCompany[]): GateResult {
-  const haystack = [rawEvent.source_text, ...rawEvent.contacts].join(" ");
-
+export function matchText(haystack: string, watchlist: WatchlistCompany[]): GateResult {
   for (const company of watchlist) {
     const candidates = [company.name, ...(company.aliases ?? [])];
     for (const candidate of candidates) {
@@ -80,4 +80,15 @@ export function matchWatchlist(rawEvent: RawEvent, watchlist: WatchlistCompany[]
     }
   }
   return { matched: false };
+}
+
+/**
+ * Check a raw permit event against the watchlist. Matches against both the
+ * permit's free-text description and its contact/owner names (brands are
+ * often named in one but not the other — a description may say "OLD NAVY"
+ * while the owner of record is an LLC, or vice versa).
+ */
+export function matchWatchlist(rawEvent: RawEvent, watchlist: WatchlistCompany[]): GateResult {
+  const haystack = [rawEvent.source_text, ...rawEvent.contacts].join(" ");
+  return matchText(haystack, watchlist);
 }

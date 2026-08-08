@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-08-08T06:10:08.524Z",
+  "cassetteKey": {
+    "provider": "permits",
+    "op": "search",
+    "key": {
+      "where": "id='2618739'",
+      "limit": 1
+    }
+  },
+  "result": [
+    {
+      "id": "chi-2618739",
+      "source_text": "Permit 100574029 at 1514 N MILWAUKEE AVE, Chicago, IL. SELF-CERT PROJECT: INTERIOR BUILD-OUT OF AN EXISTING 3,331 SF VACANT GROUND FLOOR RETAIL SPACE IN AN EXISTING THREE-STORY MIXED-USE MASONRY BUILDING. THE NEW TENANT WILL BE A RETAIL SHOE STORE. EXISTING BASEMENT WILL BE USED FOR INACTIVE STORAGE. EXTERIOR IMPROVEMENTS LIMITED TO NEW STOREFRONT AND GROUND-FLOOR WINDOW REPLACEMENT. Reported cost: $80000.",
+      "source_url": "https://webapps1.chicago.gov/buildingpermits/?permit=100574029",
+      "lat": 41.90896024738321,
+      "lng": -87.67547637112533,
+      "issue_date": "2015-01-28",
+      "reported_cost": 80000,
+      "contacts": [
+        "ZELENKO, PETER A",
+        "A CLASS ELECTRIC",
+        "POTENZA ELECTRIC",
+        "FINNEGAN DEVELOPMENT, INC",
+        "KRISTINE WESTERBERG",
+        "LAKESHORE PLUMBING, INC",
+        "DURA HEATING & COOLIN",
+        "DURA HEATING & COOLING"
+      ]
+    }
+  ]
+}
