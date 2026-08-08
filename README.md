@@ -179,16 +179,33 @@ replayed fixture correctly reports usage as unavailable rather than
 fabricating a number (the demo set's fixtures predate this tracking; run
 live with `RECORD=1` to see real per-call numbers).
 
-## Setup & running it
+## Setup & running it — no API keys required
+
+This is the whole verification path for a reviewer with no keys and no
+Mireye/Exa/LLM accounts. Every call replays from the fixtures checked into
+`/fixtures` — zero network calls, zero live spend, fully deterministic:
 
 ```bash
+git clone https://github.com/saurabhjambure-pixel/Mireye-Watcher-Agent.git
+cd Mireye-Watcher-Agent
 npm install
-cp .env.example .env   # fill in MIREYE_API_KEY, EXA_API_KEY, LLM_PROVIDER_API_KEY
-npm run pipeline               # default: replays /fixtures, zero live API spend, deterministic
+npm test           # 23 tests — zero network, zero API keys
+npm run pipeline    # 5 real Chicago permits, replayed — zero network, zero API keys
 ```
 
+Run `npm run pipeline` a second time and diff the output against the first
+— it's byte-identical, which is the determinism claim proven, not asserted.
+
+The real live-unmask evidence in this README (`fixtures/exa/unmask-ee5adc48bb86f3e5.json`)
+is also just a checked-in file — open it directly, no run required. The
+citations inside it (Chicago Tribune, REjournals) are real, independently
+checkable URLs.
+
+### Live mode (optional — needs your own API keys)
+
 ```bash
-RECORD=1 npm run pipeline                         # live mode — hits real APIs, records new fixtures
+cp .env.example .env   # MIREYE_API_KEY (sign up at mireye.com, code GROWTH), EXA_API_KEY, LLM_PROVIDER_API_KEY
+RECORD=1 npm run pipeline                         # hits real APIs, records new fixtures
 RECORD=1 npm run pipeline -- --live-field-request  # also files a real /v1/field-requests call
 npm run pipeline -- --quiet                        # suppress the raw Mireye JSON dump
 RECORD=1 npm run pipeline -- --discover            # agent finds its own matches from live permits,
@@ -201,11 +218,13 @@ GROWTH plan allows 3/month, and repeat/demo runs reuse the same
 
 ## Testing
 
+`npm test` (23 tests: gate, score, cassette versioning, pipeline failure
+isolation, the unmask tier) and `npm run pipeline` (above) are the main
+proof points. Two more, for completeness:
+
 ```bash
-npm test          # 23 tests: gate, score, cassette versioning, pipeline failure isolation, and the unmask tier
 npm run typecheck # tsc --noEmit
 npm run build     # full build to dist/
-npm run pipeline  # end-to-end, 5 real permits, replayed fixtures — run it twice and diff; output is byte-identical
 ```
 
 ## Non-goals
