@@ -237,14 +237,43 @@ dependency on any other repo.
 
 ## Feedback for Mireye
 
-`/v1/lookup` is the single worst cost-to-signal call in this pipeline: 300
-credits versus 4 for `/v1/fetch`, and it now consumes 900 of the run's 1,060
-total credits for a measured score effect of about -0.04 (the same
-county-level trend repeats across nearby addresses). Swapping it for a
-targeted `/v1/ask` query over just the fields this pipeline actually uses
-(`building_permits_yoy_pct`, `hpi_yoy_pct`, `population_growth_1yr_pct`)
-would cost an estimated 10 credits instead of 300 — an 86.5% reduction —
-if `/v1/ask` can return equivalent structured, cited values. Separately, a
-native "recent commercial lease/permit activity at this parcel" field would
-let an agent like this skip the external municipal-portal step entirely and
-get both the signal and the enrichment from Mireye directly.
+Three specific things we hit building against the live API, not hypotheticals:
+
+1. **`primary_building_footprint_sqm` timing out pushes builders toward a
+   dangerous fallback.** On a real call for Old Navy's 1730 W Fullerton Ave
+   buildout, the footprint field came back `status: "failed", retryable: true`.
+   The only other size field, `parcel_area_m2`, resolved to a Federal Realty
+   shopping-center *parcel* — using it as a footprint substitute put "414,892
+   sq ft" in customer-facing outreach copy for what's actually a real
+   $247,000 buildout in a normal-sized store, a **31x error** (see
+   [`src/mireye/fetchFacts.ts`](src/mireye/fetchFacts.ts)). We had to
+   hand-write detection logic to catch this. Given "every value ships with a
+   source and confidence" is central to the pitch, `parcel_area_m2` deserves
+   either a documented warning that it can be tens of times larger than any
+   single tenant's footprint, or a lightweight `is_footprint_proxy` flag so
+   downstream code doesn't have to guess.
+
+2. **`primary_building_overture_class` describes the whole building, not the
+   tenant unit — and mixed-use is the norm in the geography this product
+   targets.** A real $700K Trader Joe's buildout at 804 W Montrose Ave came
+   back `overture_class: "apartments"` (correct for the building overall —
+   ground-floor retail under residential above, zoning `PD-138`), which
+   would have incorrectly screened out a genuine commercial permit if we
+   hadn't added a zoning-based fallback (see the doc comment in
+   [`src/pipeline.ts`](src/pipeline.ts)). A ground-floor or per-unit class
+   field would remove a whole category of false negatives for anyone scoring
+   retail signals in dense cities.
+
+3. **`/v1/lookup` costs 300 credits — 75x `/v1/fetch` — for a response that
+   doesn't match its own docs and can't be retried per-field.** In our run
+   it consumed 900 of 1,060 total credits for a measured ~0.04 score effect,
+   since we only use 3 of its 15+ fields. Separately, the real response
+   shape (county-anchored, `parcel` genuinely optional) doesn't match the
+   parcel-anchored shape implied by public docs/marketing copy — worth
+   reconciling (see the doc comment on `MireyeCountyMarket` in
+   [`src/schemas/index.ts`](src/schemas/index.ts)). And because Mireye only
+   supports whole-request retry, not per-field, one `retryable: true` field
+   failure means re-paying for every field in the request, not just the one
+   that failed. A scoped `/v1/ask` over just the fields we use would cost an
+   estimated 10 credits instead of 300 — an 86% reduction — if it returns
+   equivalent cited values.
