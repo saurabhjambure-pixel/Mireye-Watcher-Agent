@@ -93,10 +93,13 @@ async function completeOnce(prompt: string, opts: { maxTokens?: number }): Promi
       // caller's ask to leave room for both the reasoning and the (short)
       // visible answer these calls actually need.
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey()}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
         {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: {
+            "content-type": "application/json",
+            "x-goog-api-key": apiKey(),
+          },
           body: JSON.stringify({
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {

@@ -7,9 +7,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "pipeline": "tsx src/run.ts",
+    "pipeline": "node --import tsx src/run.ts",
     "test": "node --import tsx --test src/**/*.test.ts src/*.test.ts",
-    "typecheck": "tsc --noEmit -p tsconfig.json"
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "verify": "npm test && npm run typecheck && npm run build"
   },
   "dependencies": {
     "dotenv": "^16.4.5"

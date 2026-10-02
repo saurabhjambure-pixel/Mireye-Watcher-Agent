@@ -1,279 +1,223 @@
 # Expansion Radar
 
-**An agent that finds accounts before your competitor's sales rep does.**
+**An agent that finds physical-world expansion signals before a competitor's
+sales rep does.**
 
-Built for the Mireye Build Challenge. Watches real commercial building-permit
-filings for physical-world expansion signals from a small hardcoded
-watchlist of DTC/retail brands, enriches matched signals with cited Mireye
-facts, scores buyer intent deterministically, and — above a threshold —
-**acts**: drafts outreach copy or files a Mireye field request to close an
-evidence gap. Not a dashboard. It reasons, decides, and acts.
+Expansion Radar turns commercial building-permit activity into a ranked,
+evidence-backed sales signal for a fulfillment or flexible-warehousing team.
+It combines a deterministic watchlist gate, independent brand resolution,
+Mireye site facts, pure scoring logic, and narrowly scoped LLM steps. When the
+evidence is strong enough, it acts by drafting outreach or requesting the
+missing evidence. This is a small, runnable demonstration of product thinking,
+AI orchestration, cost-aware systems design, and pragmatic “vibe coding” with
+clear boundaries around what the model is allowed to decide.
+
+## About the author
+
+I’m Saurabh Jambure, a product-minded builder who enjoys turning ambiguous
+business problems into focused, testable software. I use AI as a force
+multiplier for research, implementation, and iteration, while keeping the
+important product decisions explicit: who the user is, what evidence earns an
+action, how failure is surfaced, and what each external call costs. This repo
+is meant to show that combination of product judgment, applied AI, and hands-on
+engineering rather than present a polished UI around an opaque model call.
+
+## Why this exists
+
+Sales-intelligence tools often observe what a company says: funding, hiring,
+press releases, or job posts. Expansion Radar observes what a company does in
+the physical world: a permit is filed, a site is located and sized, and the
+signal is cross-checked against cited facts.
+
+The target user is a growth or partnerships lead at a fulfillment or
+flexible-warehousing network. They already understand sales intelligence; the
+product question is whether a physical expansion signal is strong enough to
+deserve a conversation now.
 
 ## The pipeline
 
 ```mermaid
 flowchart LR
-    A[Permit filed] -->|free, deterministic| B{Gate: watchlist match?}
-    B -- yes --> D[LLM #1: extract\naddress, type, date]
-    B -- no --> U{"Commercially plausible?\n(reported cost ≥ threshold)"}
-    U -- no --> R[Rejected — $0 spent]
-    U -- yes --> V["Exa unmask: search by address\nfor independent coverage"]
-    V --> W{Brand named in coverage?}
-    W -- no --> R2["Rejected — cost still visible\nin cost_ledger"]
-    W -- yes --> D
-    D --> E["Mireye /v1/fetch\nsize + class of site"]
-    E --> F{Commercial-capable?}
-    F -- no --> S1[Screened out]
-    F -- yes --> G["Mireye /v1/proximity\ndistance to your nodes"]
-    G --> H[Score: velocity + proximity + size\npure function, no LLM]
-    H --> I{"score ≥ LOOKUP_THRESHOLD?"}
-    I -- no --> S2[Stops — no lookup, no LLM #2]
-    I -- yes --> J["Mireye /v1/lookup\n300-credit county market data"]
-    J --> K[LLM #2: recalibrate\none-line synthesis]
-    K --> L{"score ≥ ACT_THRESHOLD?"}
-    L -- no --> S3[Notable, not actioned]
-    L -- yes --> M{Evidence gap?}
-    M -- yes --> N["Mireye /v1/field-requests\nfile the gap"]
-    M -- no --> O[Draft outreach copy]
+    A[Permit filed] -->|free, deterministic| B{Watchlist match?}
+    B -- no, low cost --> R[Rejected — $0 spent]
+    B -- no, commercially plausible --> U[Exa unmask by address]
+    U -->|no brand found| R2[Rejected — cost recorded]
+    U -->|brand found| C[Continue]
+    B -- yes --> C
+    C --> E[LLM #1: extract event]
+    E --> F[Mireye /v1/fetch]
+    F --> G{Commercial-capable site?}
+    G -- no --> S[Screened out]
+    G -- yes --> P[Mireye /v1/proximity]
+    P --> Q[Pure score: velocity + proximity + size]
+    Q -->|below lookup threshold| T[Stop — no expensive lookup]
+    Q -->|survivor| L[Mireye /v1/lookup]
+    L --> R3[LLM #2: recalibrate]
+    R3 -->|below action threshold| N[Notable, not actioned]
+    R3 -->|actionable| A2{Evidence gap?}
+    A2 -- yes --> FR[Dry-run or file field request]
+    A2 -- no --> OD[Draft outreach]
 ```
 
-Every stage after the free gate costs something — an LLM call, Mireye
-credits, or both — so cheap checks run first and expensive ones only run on
-survivors of the previous threshold. Every early exit is visible in
-`cost_ledger.escalation_stopped_at`, not just claimed.
+Every paid or quota-bearing stage is behind a cheaper gate. Each event returns
+a `cost_ledger` with the calls made and the stage where escalation stopped, so
+the system makes its cost and uncertainty visible instead of hiding them
+behind a final score.
 
-## Why this is different
+## What it demonstrates
 
-ZoomInfo, Bombora, and similar tools track what a company **says** — funding
-rounds, job posts, press releases. Expansion Radar tracks what a company
-**does** in the physical world: a permit filed, a building actually sized
-and located, cross-validated against cited facts. It's a different evidence
-category, not another layer on the same one everyone already sells.
+- **Product thinking:** a specific buyer, a specific signal, explicit
+  non-goals, and an action threshold rather than a generic “AI monitor.”
+- **Applied AI:** LLMs extract structured event data, recalibrate a bounded
+  score, and draft outreach; deterministic code owns gating, scoring, and
+  safety-critical branching.
+- **Agent behavior:** the pipeline decides whether to continue, stop, spend,
+  or ask for more evidence instead of calling every tool for every event.
+- **Engineering judgment:** replayable cassettes make the demo deterministic,
+  typed API wrappers surface failures, and idempotency protects field-request
+  retries.
+- **Evidence quality:** every enriched fact carries source metadata, and a
+  parcel area is never silently presented as a tenant's building footprint.
 
-**Who pays:** the growth/partnerships lead at a flexible-warehousing or
-fulfillment network (a Flexe/Stord-shaped buyer). They already budget for
-sales intelligence — they don't yet have one that reads physical-world
-execution instead of digital chatter.
+## What makes the signal unusual
 
-**What we combined Mireye with:** real municipal building-permit filings
-(Chicago's open-data portal — public, no auth) as the primary physical-world
-signal, resolved and sized through three tiers of Mireye: `/v1/fetch`,
-`/v1/proximity`, and `/v1/lookup`, then closed out through
-`/v1/field-requests` when the evidence is incomplete.
+The primary signal is a real municipal permit, not a press article. Interesting
+permits are often filed under a contractor or property LLC rather than the
+retail brand. When the free gate misses a commercially plausible permit, the
+pipeline spends one Exa search on the permit address, then runs the returned
+coverage through the same watchlist matcher. That second-tier unmasking step
+can recover a brand without turning press coverage into the primary signal.
 
-The "weird" part isn't just reading permits — permit databases are on
-Mireye's own example list. It's that a lot of the interesting permits are
-filed under a contractor or property-LLC name, not the retail brand, so a
-naive text-match gate rejects exactly the signals that matter most. When the
-free gate misses a commercially plausible permit (reported cost above a
-threshold — see `UNMASK_MIN_REPORTED_COST` in
-[`src/score/thresholds.ts`](src/score/thresholds.ts)), the pipeline spends
-one Exa call searching by the permit's address for independent news coverage
-naming the real brand, then runs that coverage through the exact same
-matcher the free gate uses. This is a genuine second gate tier, not
-corroboration of an already-known brand — see `unmaskBrand` in
-[`src/sources/exa.ts`](src/sources/exa.ts). It's the one place in the
-pipeline a "rejected" event can still carry nonzero cost, and that cost is
-always visible in `cost_ledger`.
+The demo includes a recorded example of a shell-filed permit that was resolved
+to lululemon through independent coverage:
 
-### Real example: unmasking a shell-filed permit
+- [Chicago Tribune — lululemon Gold Coast expansion](https://www.chicagotribune.com/2017/05/01/lululemons-gold-coast-store-to-nearly-double-in-size-as-it-becomes-flagship/)
+- [REjournals — lululemon store transaction](https://rejournals.com/colliers-international-chicago-announces-sale-of-lululemon-athletica-store/)
+- [Recorded Exa response](fixtures/exa/unmask-ee5adc48bb86f3e5.json)
 
-A live run (not a fixture, not simulated) against a real Chicago permit:
+## Run the demo with no API keys
 
-> **Permit id `2076846`**, 930 N Rush St, Chicago — filed 2009-08-25, real
-> cost **$500,000**. Full permit text: *"FIRST-TIME BUILDOUT OF ATHLETIC
-> CLOTHING RETAIL STORE."* No brand name anywhere in the description or the
-> 7 listed contacts (`KURZMAN RANDALL P`, `RIPEC ELECTRIC`, `CRANE
-> CONSTRUCTION COMPANY, L.L.C.`, …). The free gate correctly rejects it —
-> nothing in the text matches the watchlist.
->
-> `unmaskBrand` spent one live Exa call and correctly resolved it to
-> **lululemon**, citing three real, independent articles:
-> - [chicagotribune.com — "lululemon's Gold Coast store to nearly double in size as it becomes flagship"](https://www.chicagotribune.com/2017/05/01/lululemons-gold-coast-store-to-nearly-double-in-size-as-it-becomes-flagship/)
-> - [rejournals.com — "Colliers International Chicago announces sale of lululemon athletica store"](https://rejournals.com/colliers-international-chicago-announces-sale-of-lululemon-athletica-store/)
-> - [chicagomag.com](https://www.chicagomag.com/style-shopping/November-2017/This-Wicker-Park-Pop-Up-Shop-Is-the-Stuff-of-Sneakerhead-Dreams/)
-
-Recorded at [`fixtures/exa/unmask-ee5adc48bb86f3e5.json`](fixtures/exa/unmask-ee5adc48bb86f3e5.json). This is cited as standalone evidence of the capability rather than folded into the 5-event demo set below, since making it a full 6th replayable event would mean spending the remaining Mireye tiers (`/v1/fetch`, `/v1/proximity`, possibly the 300-credit `/v1/lookup`) live just for demo polish.
-
-## Proof, not a pitch
-
-One real run, five real Chicago permits (real addresses, real dollar values,
-real 2025–2026 issue dates — nothing synthetic):
-
-| Account | Signal | Buyer intent | Action | Mireye credits |
-|---|---|---:|---|---:|
-| Old Navy | $247K interior buildout permit | high (0.910) | **outreach_draft** | 340 |
-| Trader Joe's | $700K shell buildout, "TRADER JOES" (fuzzy match, no apostrophe) | high (0.726) | **field_request** (real `/v1/field-requests` call — see below) | 340 |
-| Five Below | "coming soon, now hiring" banner permit | medium (0.671) | none — stopped below `LOOKUP_THRESHOLD` | 40 |
-| lululemon | Storefront sign permit | high (0.809) | **outreach_draft** | 340 |
-| *(unrelated residential porch permit)* | — | — | rejected at gate | **0** |
-
-**Run total:** 4 matched / 1 correctly rejected, 9 LLM calls, 1,060 Mireye
-credits, $0.028 Exa cost. Two independent `npm run pipeline` runs produce
-**byte-identical output** — verified with a diff, not asserted.
-
-A field request from this exact pipeline was filed live against Mireye and
-returned a real response:
-
-```json
-{
-  "request_id": "fr_49aee4bfc5594f578c4351a4f61756e1",
-  "status": "awaiting_confirm",
-  "disposition": [
-    { "field_id": "county_employment_total", "disposition": "near_miss_confirm" },
-    { "field_id": "parcel_id", "disposition": "near_miss_confirm" }
-  ]
-}
-```
-
-The demo defaults to `--dry-run` on field requests (GROWTH plan allows only
-3/month) — this response proves the live path is real, not dead code.
-
-## Sample output
-
-One event from an actual `npm run pipeline` run, matching the fixed
-`PipelineOutput` schema in [`src/schemas/index.ts`](src/schemas/index.ts):
-
-```
-account:              Old Navy
-gate_status:          matched
-signal:               Permit 101081799 at 1730 W FULLERTON AVE, Chicago, IL. INTERIOR RENOVATION...
-synthesis:            This account matters right now because Old Navy is undertaking a 13,333 sq ft
-                       interior renovation just 13 minutes from Node - Goose Island, even as county
-                       building permits have fallen 23.6% YoY.
-mireye_facts_summary: 13,333 sq ft building footprint (retail), 13 min from Node - Goose Island,
-                       county building permits down 23.6% YoY, home prices up 5.2% YoY
-buyer_intent:         high (confidence 0.910)
-action_taken:         outreach_draft
-  detail:             I noticed Old Navy is moving forward with a 13,333 sq ft retail building
-                       footprint renovation, located just 13 minutes from our Goose Island facility...
-llm_calls_made:       3
-cost_ledger:          340 mireye credits [/v1/fetch, /v1/proximity, /v1/lookup], $0.0070 exa,
-                       stopped_at=completed
-```
-
-## Cost discipline
-
-Weights, thresholds, and Mireye credit costs live in exactly one place:
-[`src/score/thresholds.ts`](src/score/thresholds.ts) — no inline magic
-numbers anywhere else in the codebase.
-
-| Stage | Cost | Gated by |
-|---|---|---|
-| Gate (watchlist match) | $0, 0 credits | every incoming permit |
-| Exa unmask (2nd-tier gate) | 1 Exa call, ~$0.007 | only gate-misses with reported cost ≥ `UNMASK_MIN_REPORTED_COST` |
-| Exa resolve + LLM #1 extract | 1 LLM call, ~$0.007 | survivors of the gate (reuses the unmask call's Exa spend if it already ran) |
-| `/v1/fetch` (size + class) | 4 credits | every matched, located event |
-| `/v1/proximity` (distance to your nodes) | 36 credits | every commercial-capable event |
-| `/v1/lookup` (county market data) | **300 credits** | only events scoring ≥ `LOOKUP_THRESHOLD` (`ACT_THRESHOLD`, 0.7) |
-| LLM #2 recalibrate + act | 1–2 LLM calls | only events scoring ≥ `ACT_THRESHOLD` (0.7) |
-
-`/v1/lookup` is deliberately the last and rarest call — it's 75x the cost
-of `/v1/fetch` for a bounded ±0.10 score refinement, so it only runs once a
-candidate is already act-capable on the cheap velocity/proximity/size screen.
-
-LLM cost is tracked the same way: `cost_ledger` carries real, provider-
-reported `llm_input_tokens`/`llm_output_tokens` plus an approximate
-`llm_cost_dollars` estimate, captured only on an actual live call — a
-replayed fixture correctly reports usage as unavailable rather than
-fabricating a number (the demo set's fixtures predate this tracking; run
-live with `RECORD=1` to see real per-call numbers).
-
-## Setup & running it — no API keys required
-
-This is the whole verification path for a reviewer with no keys and no
-Mireye/Exa/LLM accounts. Every call replays from the fixtures checked into
-`/fixtures` — zero network calls, zero live spend, fully deterministic:
+Requirements: Node.js 20 or newer.
 
 ```bash
 git clone https://github.com/saurabhjambure-pixel/Mireye-Watcher-Agent.git
 cd Mireye-Watcher-Agent
 npm install
-npm test           # 23 tests — zero network, zero API keys
-npm run pipeline    # 5 real Chicago permits, replayed — zero network, zero API keys
+npm run verify
+npm run pipeline
 ```
 
-Run `npm run pipeline` a second time and diff the output against the first
-— it's byte-identical, which is the determinism claim proven, not asserted.
+The default mode replays checked-in fixtures. It makes no network calls to
+Mireye, Exa, or the LLM provider, spends nothing, and produces the same result
+on repeat runs. The fixture set contains five real Chicago permit records:
+four matched signals and one unrelated residential permit rejected at the
+free gate.
 
-The real live-unmask evidence in this README (`fixtures/exa/unmask-ee5adc48bb86f3e5.json`)
-is also just a checked-in file — open it directly, no run required. The
-citations inside it (Chicago Tribune, REjournals) are real, independently
-checkable URLs.
-
-### Live mode (optional — needs your own API keys)
+To check determinism yourself:
 
 ```bash
-cp .env.example .env   # MIREYE_API_KEY (sign up at mireye.com, code GROWTH), EXA_API_KEY, LLM_PROVIDER_API_KEY
-RECORD=1 npm run pipeline                         # hits real APIs, records new fixtures
-RECORD=1 npm run pipeline -- --live-field-request  # also files a real /v1/field-requests call
-npm run pipeline -- --quiet                        # suppress the raw Mireye JSON dump
-RECORD=1 npm run pipeline -- --discover            # agent finds its own matches from live permits,
-                                                    # instead of the 5 fixed demo IDs — see src/run.ts
+npm run pipeline > /tmp/expansion-radar-run-1.txt
+npm run pipeline > /tmp/expansion-radar-run-2.txt
+diff -u /tmp/expansion-radar-run-1.txt /tmp/expansion-radar-run-2.txt
 ```
 
-Field requests default to dry-run/validate-only even in live mode — the
-GROWTH plan allows 3/month, and repeat/demo runs reuse the same
-`idempotency_key` instead of filing twice.
+The tests cover gate matching, fuzzy matching, scoring thresholds, cassette
+versioning, per-event failure isolation, and the Exa unmasking tier.
 
-## Testing
+## Use live providers (optional)
 
-`npm test` (23 tests: gate, score, cassette versioning, pipeline failure
-isolation, the unmask tier) and `npm run pipeline` (above) are the main
-proof points. Two more, for completeness:
+Live mode requires your own provider accounts and API keys:
 
 ```bash
-npm run typecheck # tsc --noEmit
-npm run build     # full build to dist/
+cp .env.example .env
+# Fill in MIREYE_API_KEY, EXA_API_KEY, and LLM_PROVIDER_API_KEY in .env.
+
+RECORD=1 npm run pipeline
+RECORD=1 npm run pipeline -- --discover
 ```
 
-## Non-goals
+`RECORD=1` sends real requests and writes their responses to `fixtures/`.
+Review every new recording before committing it. The normal field-request
+path is validation-only/dry-run, which protects Mireye's monthly quota. Only
+use this explicit command when you intend to make an external write:
 
-No live web scraping beyond the two documented public/no-auth APIs (Chicago
-permits, Exa). No database, no persistence beyond `/fixtures` cassettes, no
-auth, no multi-user support, no UI framework. No generalization beyond this
-one vertical — DTC retail expansion signal → fulfillment network buyer. No
-dependency on any other repo.
+```bash
+RECORD=1 npm run pipeline -- --live-field-request
+```
 
-## Feedback for Mireye
+Other useful options:
 
-Three specific things we hit building against the live API, not hypotheticals:
+```bash
+npm run pipeline -- --quiet
+RECORD=1 npm run pipeline -- --discover --discover-days=7 --discover-limit=50
+```
 
-1. **`primary_building_footprint_sqm` timing out pushes builders toward a
-   dangerous fallback.** On a real call for Old Navy's 1730 W Fullerton Ave
-   buildout, the footprint field came back `status: "failed", retryable: true`.
-   The only other size field, `parcel_area_m2`, resolved to a Federal Realty
-   shopping-center *parcel* — using it as a footprint substitute put "414,892
-   sq ft" in customer-facing outreach copy for what's actually a real
-   $247,000 buildout in a normal-sized store, a **31x error** (see
-   [`src/mireye/fetchFacts.ts`](src/mireye/fetchFacts.ts)). We had to
-   hand-write detection logic to catch this. Given "every value ships with a
-   source and confidence" is central to the pitch, `parcel_area_m2` deserves
-   either a documented warning that it can be tens of times larger than any
-   single tenant's footprint, or a lightweight `is_footprint_proxy` flag so
-   downstream code doesn't have to guess.
+See [`.env.example`](.env.example) for the complete configuration surface and
+[`SECURITY.md`](SECURITY.md) before using live mode.
 
-2. **`primary_building_overture_class` describes the whole building, not the
-   tenant unit — and mixed-use is the norm in the geography this product
-   targets.** A real $700K Trader Joe's buildout at 804 W Montrose Ave came
-   back `overture_class: "apartments"` (correct for the building overall —
-   ground-floor retail under residential above, zoning `PD-138`), which
-   would have incorrectly screened out a genuine commercial permit if we
-   hadn't added a zoning-based fallback (see the doc comment in
-   [`src/pipeline.ts`](src/pipeline.ts)). A ground-floor or per-unit class
-   field would remove a whole category of false negatives for anyone scoring
-   retail signals in dense cities.
+## Cost-aware escalation
 
-3. **`/v1/lookup` costs 300 credits — 75x `/v1/fetch` — for a response that
-   doesn't match its own docs and can't be retried per-field.** In our run
-   it consumed 900 of 1,060 total credits for a measured ~0.04 score effect,
-   since we only use 3 of its 15+ fields. Separately, the real response
-   shape (county-anchored, `parcel` genuinely optional) doesn't match the
-   parcel-anchored shape implied by public docs/marketing copy — worth
-   reconciling (see the doc comment on `MireyeCountyMarket` in
-   [`src/schemas/index.ts`](src/schemas/index.ts)). And because Mireye only
-   supports whole-request retry, not per-field, one `retryable: true` field
-   failure means re-paying for every field in the request, not just the one
-   that failed. A scoped `/v1/ask` over just the fields we use would cost an
-   estimated 10 credits instead of 300 — an 86% reduction — if it returns
-   equivalent cited values.
+Thresholds, weights, and Mireye credit costs live in
+[`src/score/thresholds.ts`](src/score/thresholds.ts). The current design keeps
+the most expensive call last:
+
+| Stage | Cost | Runs when |
+| --- | ---: | --- |
+| Deterministic gate | $0 | Every permit |
+| Exa unmask | About $0.007 | A gate miss looks commercially plausible |
+| LLM extraction | Provider cost | A brand survives the gate |
+| Mireye `/v1/fetch` | 4 credits | A matched event has a location |
+| Mireye `/v1/proximity` | 36 credits for three nodes | The site is commercial-capable |
+| Mireye `/v1/lookup` | 300 credits | The cheap score clears `LOOKUP_THRESHOLD` |
+| Recalibration and action | Provider cost | The lookup survivor is action-capable |
+
+The ledger also records provider-reported LLM token usage when running live.
+Replayed fixtures recorded before usage tracking report unavailable cost rather
+than inventing a number.
+
+## Repository map
+
+```text
+src/
+  gate/          deterministic watchlist matching
+  score/         weights, thresholds, and pure scoring functions
+  pipeline.ts    tiered orchestration and failure isolation
+  mireye/       typed Mireye endpoint wrappers
+  sources/       Chicago permits and Exa resolution
+  extract/       LLM event extraction
+  recalibrate/   bounded LLM score refinement
+  act/           outreach draft and field-request actions
+  cassette.ts    record/replay boundary for every external call
+fixtures/        committed replay data for the offline demo
+demo-data/       watchlist, reference nodes, and demo permit IDs
+```
+
+## Testing and contribution
+
+```bash
+npm test
+npm run typecheck
+npm run build
+npm run verify       # all three commands above
+```
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the review checklist and
+[`AUDIT_REPORT.md`](AUDIT_REPORT.md) for historical implementation notes and
+trade-offs discovered while building against live APIs.
+
+## Scope and limitations
+
+This is a focused CLI demonstration, not a production monitoring service. It
+does not include a database, authentication, multi-user support, a UI, or a
+general-purpose crawler. It currently targets DTC/retail expansion signals for
+a fulfillment-network buyer and uses Chicago permit data as its municipal
+source.
+
+The checked-in permit and provider fixtures are intended for reproducible
+demonstration. They may contain public addresses, company names, citations,
+and provider response metadata; review them before adding new recordings or
+repurposing the pipeline for a different data source.
+
+## License
+
+Released under the [MIT License](LICENSE).
